@@ -1,0 +1,2572 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizGenius AI — Artificial Intelligence & Machine Learning Learning Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                            950: '#1e1b4b',
+                        },
+                        secondary: {
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                        },
+                        accent: {
+                            500: '#06b6d4',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.6);
+        }
+        /* Glassmorphism effects */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+        }
+        /* Gradient borders & text */
+        .gradient-text {
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-btn {
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            transition: all 0.3s ease;
+        }
+        .gradient-btn:hover {
+            opacity: 0.95;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+            transform: translateY(-1px);
+        }
+        /* Option selection pulse */
+        .option-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-card:hover {
+            transform: translateX(4px);
+        }
+        /* Confetti Canvas positioning */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white transition-colors duration-200">
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none max-w-sm w-full px-4"></div>
+
+    <!-- Main Layout Wrapper -->
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-30 transition-all duration-300">
+            <!-- Brand Header -->
+            <div class="p-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/60">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('dashboard')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-secondary-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-brain text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-lg tracking-tight leading-none text-slate-900 dark:text-white">
+                            Quiz<span class="gradient-text">Genius</span>
+                        </h1>
+                        <span class="text-[10px] font-semibold text-brand-600 dark:text-brand-400 tracking-wider uppercase">AI & ML Suite</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+                <button onclick="navigateTo('dashboard')" data-nav="dashboard" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-150 text-brand-600 bg-brand-50 dark:bg-brand-950/50 dark:text-brand-400 font-semibold">
+                    <i class="fa-solid fa-chart-pie w-5 text-center text-base"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button onclick="navigateTo('explore')" data-nav="explore" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-compass w-5 text-center text-base"></i>
+                    <span>Explore AI Quizzes</span>
+                </button>
+                <button onclick="navigateTo('generator')" data-nav="generator" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-wand-magic-sparkles w-5 text-center text-base text-secondary-500"></i>
+                    <span class="flex-1 text-left">AI Quiz Generator</span>
+                    <span class="px-1.5 py-0.5 text-[10px] font-bold uppercase rounded bg-secondary-100 dark:bg-secondary-900/50 text-secondary-600 dark:text-secondary-400">PRO</span>
+                </button>
+                <button onclick="navigateTo('history')" data-nav="history" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-clock-rotate-left w-5 text-center text-base"></i>
+                    <span>Quiz History</span>
+                </button>
+                <button onclick="navigateTo('leaderboard')" data-nav="leaderboard" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-trophy w-5 text-center text-base"></i>
+                    <span>Scholar Leaderboard</span>
+                </button>
+                <button onclick="navigateTo('analytics')" data-nav="analytics" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-chart-line w-5 text-center text-base"></i>
+                    <span>AI Learning Analytics</span>
+                </button>
+                <button onclick="navigateTo('about')" data-nav="about" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-circle-info w-5 text-center text-base"></i>
+                    <span>About & Viva Q&A</span>
+                </button>
+                <button onclick="navigateTo('settings')" data-nav="settings" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-150 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-gear w-5 text-center text-base"></i>
+                    <span>Settings</span>
+                </button>
+            </nav>
+
+            <!-- Sidebar User Banner -->
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800/60">
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/50">
+                    <div id="sidebar-user-avatar" class="w-9 h-9 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                        AS
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="sidebar-user-name" class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">Alex Student</p>
+                        <p id="sidebar-user-level" class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">AI & ML Scholar</p>
+                    </div>
+                    <button onclick="toggleDarkMode()" title="Toggle Theme" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg">
+                        <i class="fa-solid fa-moon dark:hidden"></i>
+                        <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+            <!-- Mobile Top Bar -->
+            <header class="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-20">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('dashboard')">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-secondary-500 flex items-center justify-center text-white text-sm">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <span class="font-extrabold text-base tracking-tight text-slate-900 dark:text-white">
+                        Quiz<span class="gradient-text">Genius</span> AI
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleDarkMode()" class="p-2 text-slate-500 dark:text-slate-400" title="Toggle Theme">
+                        <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+                        <i class="fa-solid fa-sun hidden dark:block text-amber-400 text-lg"></i>
+                    </button>
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 text-slate-600 dark:text-slate-300" title="Menu">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Mobile Dropdown Navigation Drawer -->
+            <div id="mobile-menu" class="hidden md:hidden fixed inset-x-0 top-[57px] bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-4 space-y-2 z-40 shadow-xl">
+                <button onclick="navigateTo('dashboard'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-chart-pie w-5 text-brand-500"></i> Dashboard
+                </button>
+                <button onclick="navigateTo('explore'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-compass w-5 text-brand-500"></i> Explore AI Quizzes
+                </button>
+                <button onclick="navigateTo('generator'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-wand-magic-sparkles w-5 text-secondary-500"></i> AI Quiz Generator
+                </button>
+                <button onclick="navigateTo('history'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-clock-rotate-left w-5 text-brand-500"></i> Quiz History
+                </button>
+                <button onclick="navigateTo('leaderboard'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-trophy w-5 text-amber-500"></i> Scholar Leaderboard
+                </button>
+                <button onclick="navigateTo('analytics'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-chart-line w-5 text-cyan-500"></i> AI Learning Analytics
+                </button>
+                <button onclick="navigateTo('about'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-circle-info w-5 text-brand-500"></i> About & Viva Q&A
+                </button>
+                <button onclick="navigateTo('settings'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-gear w-5 text-slate-500"></i> Settings
+                </button>
+            </div>
+
+            <!-- Main Scrollable Body View -->
+            <main class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 max-w-7xl w-full mx-auto">
+
+                <!-- VIEW 1: DASHBOARD -->
+                <section id="view-dashboard" class="page-view space-y-8">
+                    <!-- Hero Banner -->
+                    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-10 text-white shadow-xl shadow-brand-500/10 border border-slate-800">
+                        <div class="absolute -right-10 -bottom-10 w-64 h-64 rounded-full bg-brand-500/20 blur-3xl pointer-events-none"></div>
+                        <div class="relative z-10 max-w-2xl space-y-4">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 border border-brand-400/30 text-brand-300 text-xs font-semibold">
+                                <i class="fa-solid fa-robot"></i> AI & Machine Learning Evaluation Platform
+                            </div>
+                            <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
+                                Master <span class="gradient-text">AI & Machine Learning</span>
+                            </h2>
+                            <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+                                Accelerate your Artificial Intelligence and Machine Learning mastery. Practice curated MCQs across Neural Networks, Transformers, Computer Vision, and Supervised Learning, or generate custom AI assessments in seconds.
+                            </p>
+                            <div class="flex flex-wrap gap-3 pt-2">
+                                <button onclick="navigateTo('generator')" class="gradient-btn px-5 py-3 rounded-xl font-bold text-sm text-white shadow-lg flex items-center gap-2">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Quiz
+                                </button>
+                                <button onclick="navigateTo('explore')" class="px-5 py-3 rounded-xl font-bold text-sm bg-white/10 hover:bg-white/20 text-white border border-white/20 transition flex items-center gap-2 backdrop-blur-md">
+                                    <i class="fa-solid fa-play"></i> Explore AI Quizzes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Bar -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-950/50 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Quizzes Completed</p>
+                                <h3 id="stat-completed" class="text-2xl font-extrabold text-slate-900 dark:text-white">0</h3>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Average Score</p>
+                                <h3 id="stat-avg-score" class="text-2xl font-extrabold text-slate-900 dark:text-white">0%</h3>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-award"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Best Score</p>
+                                <h3 id="stat-best-score" class="text-2xl font-extrabold text-slate-900 dark:text-white">0%</h3>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-list-check"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Answered</p>
+                                <h3 id="stat-total-q" class="text-2xl font-extrabold text-slate-900 dark:text-white">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Challenge & Quick Start -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Daily Challenge Banner -->
+                        <div class="lg:col-span-2 bg-gradient-to-br from-brand-600 to-secondary-600 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden flex flex-col justify-between">
+                            <div class="space-y-2 relative z-10">
+                                <div class="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider">
+                                    <i class="fa-solid fa-fire text-amber-300"></i> Daily AI Streak Challenge
+                                </div>
+                                <h3 class="text-2xl font-bold">Deep Learning & Neural Architectures</h3>
+                                <p class="text-brand-100 text-sm max-w-lg">
+                                    Test your understanding of backpropagation, activation functions, gradient descent, and convolutional layers. Complete today's AI challenge for bonus XP!
+                                </p>
+                            </div>
+                            <div class="mt-6 flex items-center justify-between relative z-10">
+                                <span class="text-xs font-semibold text-brand-200">
+                                    <i class="fa-solid fa-clock"></i> 5 Mins • 5 Questions • Medium
+                                </span>
+                                <button onclick="startPresetQuiz('deep-learning-nn')" class="px-5 py-2.5 rounded-xl bg-white text-brand-700 hover:bg-brand-50 font-bold text-sm shadow transition">
+                                    Take Challenge
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Subject Jump -->
+                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-slate-900 dark:text-white text-base mb-1">Recommended AI Topics</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Pick an AI/ML domain and start answering MCQs instantly.</p>
+                                <div class="space-y-2">
+                                    <button onclick="startPresetQuiz('ai-foundations')" class="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-brand-50 dark:hover:bg-brand-950/30 text-left transition border border-slate-100 dark:border-slate-800">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fa-solid fa-brain text-brand-500"></i>
+                                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Foundations of AI & Search</span>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                                    </button>
+                                    <button onclick="startPresetQuiz('ml-supervised')" class="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-brand-50 dark:hover:bg-brand-950/30 text-left transition border border-slate-100 dark:border-slate-800">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fa-solid fa-robot text-secondary-500"></i>
+                                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Supervised ML & Classifiers</span>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                                    </button>
+                                    <button onclick="startPresetQuiz('nlp-transformers')" class="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-brand-50 dark:hover:bg-brand-950/30 text-left transition border border-slate-100 dark:border-slate-800">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fa-solid fa-comments text-cyan-500"></i>
+                                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">NLP & Transformers (LLMs)</span>
+                                        </div>
+                                        <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Quiz Activity Feed -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-slate-900 dark:text-white text-lg">Recent AI Quiz Attempts</h3>
+                            <button onclick="navigateTo('history')" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">View All History</button>
+                        </div>
+                        <div id="recent-activity-list" class="space-y-3">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 2: EXPLORE QUIZZES -->
+                <section id="view-explore" class="page-view hidden space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Explore AI & Machine Learning Quizzes</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Browse curated multiple-choice quizzes across Machine Learning, Deep Learning, NLP, Computer Vision, and Reinforcement Learning.</p>
+                        </div>
+                    </div>
+
+                    <!-- Search and Filter Controls -->
+                    <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col lg:flex-row gap-3">
+                        <!-- Search Bar -->
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400"></i>
+                            <input id="quiz-search-input" type="text" onkeyup="filterQuizzes()" placeholder="Search AI/ML quizzes by topic, keyword, or concept..." class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-brand-500 dark:text-slate-100">
+                        </div>
+                        <!-- Filters -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <select id="filter-subject" onchange="filterQuizzes()" class="px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-700 dark:text-slate-200 focus:outline-none">
+                                <option value="All">All AI/ML Domains</option>
+                                <option value="Artificial Intelligence">Artificial Intelligence</option>
+                                <option value="Machine Learning">Machine Learning</option>
+                                <option value="Deep Learning">Deep Learning</option>
+                                <option value="Natural Language Processing">Natural Language Processing</option>
+                                <option value="Computer Vision">Computer Vision</option>
+                                <option value="Reinforcement Learning">Reinforcement Learning</option>
+                                <option value="AI Ethics & Evaluation">AI Ethics & Evaluation</option>
+                            </select>
+                            <select id="filter-difficulty" onchange="filterQuizzes()" class="px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-700 dark:text-slate-200 focus:outline-none">
+                                <option value="All">All Difficulties</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                            <select id="sort-quizzes" onchange="filterQuizzes()" class="px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-700 dark:text-slate-200 focus:outline-none">
+                                <option value="newest">Sort: Featured</option>
+                                <option value="popular">Sort: Popular</option>
+                                <option value="shortest">Sort: Shortest</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Quizzes Grid -->
+                    <div id="quiz-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Populated dynamically via script -->
+                    </div>
+                </section>
+
+                <!-- VIEW 3: AI QUIZ GENERATOR -->
+                <section id="view-generator" class="page-view hidden max-w-4xl mx-auto space-y-6">
+                    <div class="text-center space-y-2">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-100 dark:bg-secondary-950/60 border border-secondary-300 dark:border-secondary-800 text-secondary-600 dark:text-secondary-400 text-xs font-bold">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI & ML Engine Powered
+                        </div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Create Custom AI & ML Quizzes</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm max-w-xl mx-auto">
+                            Enter any Artificial Intelligence or Machine Learning topic. Our smart engine dynamically formulates structured multiple-choice questions with verified correct answers and detailed conceptual explanations.
+                        </p>
+                    </div>
+
+                    <!-- Generator Form Card -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xl space-y-6">
+                        
+                        <!-- Mode Selector (Demo vs AI API) -->
+                        <div class="p-4 rounded-2xl bg-brand-50/50 dark:bg-brand-950/20 border border-brand-200/50 dark:border-brand-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-brand-500 text-white flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-sliders"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Generator Engine Mode</h4>
+                                    <p id="gen-mode-desc" class="text-xs text-slate-500 dark:text-slate-400">Intelligent Offline AI/ML Engine matches and synthesizes domain questions instantly. Switch to Live Gemini API for direct cloud AI generation.</p>
+                                </div>
+                            </div>
+                            <button id="toggle-gen-mode-btn" onclick="toggleGeneratorMode()" class="px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition shadow-sm shrink-0">
+                                Engine: Smart Local Mode
+                            </button>
+                        </div>
+
+                        <!-- Gemini API Key Input (Hidden by default in Demo mode) -->
+                        <div id="gemini-key-wrapper" class="hidden p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 space-y-2">
+                            <label class="block text-xs font-bold text-amber-800 dark:text-amber-300">
+                                Optional Gemini API Key (Client-side Direct Calls):
+                            </label>
+                            <input id="gemini-api-key" type="password" placeholder="AIzaSy..." class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700 rounded-xl text-xs focus:outline-none">
+                            <p class="text-[11px] text-amber-700 dark:text-amber-400">
+                                If left blank, the app will gracefully use the built-in intelligent AI/ML question bank.
+                            </p>
+                        </div>
+
+                        <form id="ai-generator-form" onsubmit="handleQuizGeneration(event)" class="space-y-6">
+                            
+                            <!-- Topic Input -->
+                            <div class="space-y-2">
+                                <label for="gen-topic" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                                    AI / ML Topic or Concept <span class="text-red-500">*</span>
+                                </label>
+                                <input id="gen-topic" type="text" required placeholder="e.g., Backpropagation, Support Vector Machines, Transformer Self-Attention, CNNs, Q-Learning, Overfitting..." class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium focus:outline-none focus:border-brand-500 dark:text-slate-100">
+                            </div>
+
+                            <!-- Grid 2-cols -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <!-- Subject Category -->
+                                <div class="space-y-2">
+                                    <label for="gen-subject" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">AI / ML Domain</label>
+                                    <select id="gen-subject" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium focus:outline-none focus:border-brand-500 dark:text-slate-100">
+                                        <option value="Artificial Intelligence">Artificial Intelligence (Search, Logic, Heuristics)</option>
+                                        <option value="Machine Learning" selected>Machine Learning (Supervised & Unsupervised)</option>
+                                        <option value="Deep Learning">Deep Learning (Neural Networks, CNNs, Optimization)</option>
+                                        <option value="Natural Language Processing">Natural Language Processing (LLMs & Transformers)</option>
+                                        <option value="Computer Vision">Computer Vision (Image Recognition & Detection)</option>
+                                        <option value="Reinforcement Learning">Reinforcement Learning (Q-Learning & Agents)</option>
+                                        <option value="AI Ethics & Evaluation">AI Ethics & Model Evaluation Metrics</option>
+                                    </select>
+                                </div>
+
+                                <!-- Difficulty -->
+                                <div class="space-y-2">
+                                    <label for="gen-difficulty" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Difficulty Level</label>
+                                    <select id="gen-difficulty" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium focus:outline-none focus:border-brand-500 dark:text-slate-100">
+                                        <option value="Easy">Easy (Foundational & Definitions)</option>
+                                        <option value="Medium" selected>Medium (Conceptual & Mathematical)</option>
+                                        <option value="Hard">Hard (Advanced Architectures & Trade-offs)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Grid 3-cols -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <!-- Question Count -->
+                                <div class="space-y-2">
+                                    <label for="gen-count" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Number of Questions</label>
+                                    <select id="gen-count" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium focus:outline-none focus:border-brand-500 dark:text-slate-100">
+                                        <option value="5" selected>5 Questions</option>
+                                        <option value="10">10 Questions</option>
+                                    </select>
+                                </div>
+
+                                <!-- Question Type -->
+                                <div class="space-y-2">
+                                    <label for="gen-type" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Question Format</label>
+                                    <select id="gen-type" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium focus:outline-none focus:border-brand-500 dark:text-slate-100">
+                                        <option value="MCQ" selected>Multiple Choice (4 Options)</option>
+                                        <option value="TF">True / False</option>
+                                        <option value="Mixed">Mixed (MCQ + True/False)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Timer Setting -->
+                                <div class="space-y-2">
+                                    <label for="gen-timer" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Timer Per Question</label>
+                                    <select id="gen-timer" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium focus:outline-none focus:border-brand-500 dark:text-slate-100">
+                                        <option value="0">No Timer (Self-Paced)</option>
+                                        <option value="15">15 Seconds (Fast Quiz)</option>
+                                        <option value="25" selected>25 Seconds (Standard)</option>
+                                        <option value="45">45 Seconds (Deep Thought)</option>
+                                        <option value="60">60 Seconds</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Learning Goal / Focus -->
+                            <div class="space-y-2">
+                                <label for="gen-goal" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                                    Specific AI Learning Goal <span class="text-slate-400 font-normal">(Optional)</span>
+                                </label>
+                                <textarea id="gen-goal" rows="2" placeholder="e.g., Focus on loss functions, gradient descent variants, mathematical equations, or real-world deployment..." class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium focus:outline-none focus:border-brand-500 dark:text-slate-100"></textarea>
+                            </div>
+
+                            <!-- Submit CTA -->
+                            <button type="submit" id="gen-submit-btn" class="w-full gradient-btn py-4 rounded-2xl font-bold text-white shadow-xl flex items-center justify-center gap-3 text-base">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>Generate AI & ML Quiz Now</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Generator Loading State Modal -->
+                    <div id="gen-loading-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+                        <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 max-w-md w-full text-center space-y-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+                            <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
+                                <div class="absolute inset-0 rounded-full border-4 border-brand-200 dark:border-brand-900 border-t-brand-600 animate-spin"></div>
+                                <i class="fa-solid fa-brain text-2xl text-brand-600 dark:text-brand-400"></i>
+                            </div>
+                            <div class="space-y-2">
+                                <h3 id="gen-loading-title" class="text-xl font-bold text-slate-900 dark:text-white">Generating AI & ML Questions...</h3>
+                                <p id="gen-loading-msg" class="text-xs text-slate-500 dark:text-slate-400">Analyzing domain concepts, balancing option choices, and formulating detailed answer explanations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 4: QUIZ TAKING INTERFACE -->
+                <section id="view-quiz" class="page-view hidden max-w-4xl mx-auto space-y-6">
+                    <!-- Active Quiz Top Bar -->
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span id="active-quiz-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-brand-100 text-brand-700 dark:bg-brand-950 dark:text-brand-300">
+                                    AI & ML Quiz
+                                </span>
+                                <span id="active-quiz-diff" class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Medium</span>
+                            </div>
+                            <h2 id="active-quiz-title" class="text-xl font-bold text-slate-900 dark:text-white mt-1">Deep Learning & Neural Architectures</h2>
+                        </div>
+
+                        <!-- Timer Widget -->
+                        <div id="quiz-timer-box" class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <i class="fa-solid fa-stopwatch text-brand-600 dark:text-brand-400 text-lg"></i>
+                            <div>
+                                <p class="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Time Remaining</p>
+                                <p id="quiz-timer-text" class="text-base font-mono font-extrabold text-slate-900 dark:text-white">00:25</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
+                            <span>Question <span id="quiz-q-current">1</span> of <span id="quiz-q-total">5</span></span>
+                            <span id="quiz-progress-pct">20% Completed</span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                            <div id="quiz-progress-fill" class="bg-gradient-to-r from-brand-500 to-secondary-500 h-full w-1/5 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <!-- Question & Answers Card -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xl space-y-6">
+                        <!-- Question Text -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span id="q-category-tag" class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wider">Deep Learning</span>
+                                <button onclick="toggleMarkForReview()" id="mark-review-btn" class="px-3 py-1 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5">
+                                    <i class="fa-regular fa-bookmark"></i> Mark for Review
+                                </button>
+                            </div>
+                            <h3 id="question-text" class="text-lg md:text-xl font-extrabold text-slate-900 dark:text-white leading-relaxed">
+                                Which mathematical rule of calculus is the foundational mechanism behind the Backpropagation algorithm in neural networks?
+                            </h3>
+                        </div>
+
+                        <!-- Options Container -->
+                        <div id="options-container" class="space-y-3">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <!-- Bottom Controls -->
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex gap-2">
+                                <button onclick="prevQuestion()" id="prev-btn" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition disabled:opacity-40">
+                                    <i class="fa-solid fa-arrow-left mr-1"></i> Previous
+                                </button>
+                                <button onclick="clearCurrentSelection()" class="px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                    Clear Selection
+                                </button>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="nextQuestion()" id="next-btn" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white transition shadow-md">
+                                    Next Question <i class="fa-solid fa-arrow-right ml-1"></i>
+                                </button>
+                                <button onclick="confirmQuizSubmit()" id="submit-quiz-btn" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-md">
+                                    Submit Quiz
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Navigation Grid Matrix -->
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
+                            <span>Question Navigator</span>
+                            <div class="flex items-center gap-3">
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span> Answered</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Review</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700"></span> Empty</span>
+                            </div>
+                        </div>
+                        <div id="question-matrix" class="flex flex-wrap gap-2">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 5: RESULT PAGE -->
+                <section id="view-result" class="page-view hidden max-w-3xl mx-auto space-y-8">
+                    <!-- Completion Card Header -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-xl text-center space-y-6">
+                        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-3xl shadow-inner">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <span id="result-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                                Great Performance!
+                            </span>
+                            <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">AI Quiz Completed!</h2>
+                            <p id="result-message" class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+                                Excellent job! You've successfully finished the Artificial Intelligence evaluation.
+                            </p>
+                        </div>
+
+                        <!-- Score Percentage Circle / Big Number -->
+                        <div class="py-4">
+                            <div class="text-5xl md:text-6xl font-black gradient-text tracking-tight" id="result-score-pct">
+                                80%
+                            </div>
+                            <p class="text-xs font-bold uppercase text-slate-400 tracking-wider mt-1" id="result-score-ratio">4 OUT OF 5 QUESTIONS CORRECT</p>
+                        </div>
+
+                        <!-- Detailed Breakdown Grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <div class="p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl border border-emerald-100 dark:border-emerald-900/50">
+                                <p class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase">Correct</p>
+                                <p id="res-correct" class="text-xl font-extrabold text-emerald-800 dark:text-emerald-300">0</p>
+                            </div>
+                            <div class="p-3 bg-rose-50 dark:bg-rose-950/30 rounded-xl border border-rose-100 dark:border-rose-900/50">
+                                <p class="text-[10px] font-bold text-rose-700 dark:text-rose-400 uppercase">Incorrect</p>
+                                <p id="res-incorrect" class="text-xl font-extrabold text-rose-800 dark:text-rose-300">0</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Unanswered</p>
+                                <p id="res-unanswered" class="text-xl font-extrabold text-slate-700 dark:text-slate-300">0</p>
+                            </div>
+                            <div class="p-3 bg-brand-50 dark:bg-brand-950/30 rounded-xl border border-brand-100 dark:border-brand-900/50">
+                                <p class="text-[10px] font-bold text-brand-700 dark:text-brand-400 uppercase">Time Taken</p>
+                                <p id="res-time" class="text-xl font-extrabold text-brand-800 dark:text-brand-300">0s</p>
+                            </div>
+                        </div>
+
+                        <!-- Action CTAs -->
+                        <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
+                            <button onclick="navigateTo('review')" class="px-5 py-3 rounded-xl font-bold text-sm bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 transition flex items-center gap-2">
+                                <i class="fa-solid fa-list-check"></i> Review Explanations
+                            </button>
+                            <button onclick="retryLastQuiz()" class="px-5 py-3 rounded-xl font-bold text-sm bg-brand-600 hover:bg-brand-700 text-white transition flex items-center gap-2">
+                                <i class="fa-solid fa-rotate-right"></i> Retry Quiz
+                            </button>
+                            <button onclick="navigateTo('generator')" class="px-5 py-3 rounded-xl font-bold text-sm border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition">
+                                New AI Quiz
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 6: DETAILED ANSWER REVIEW -->
+                <section id="view-review" class="page-view hidden max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Detailed Answer Review</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Review your choices alongside verified answers and conceptual explanations.</p>
+                        </div>
+                        <button onclick="navigateTo('result')" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
+                            Back to Result
+                        </button>
+                    </div>
+
+                    <div id="review-cards-list" class="space-y-4">
+                        <!-- Populated dynamically via script -->
+                    </div>
+                </section>
+
+                <!-- VIEW 7: MY QUIZ HISTORY -->
+                <section id="view-history" class="page-view hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">My AI Quiz History</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Track and review past assessment scores saved locally in your browser.</p>
+                        </div>
+                        <button onclick="confirmClearHistory()" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 hover:bg-rose-100 transition">
+                            <i class="fa-solid fa-trash-can mr-1"></i> Clear All History
+                        </button>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                    <tr>
+                                        <th class="p-4">Quiz Title</th>
+                                        <th class="p-4">AI Domain</th>
+                                        <th class="p-4">Date</th>
+                                        <th class="p-4">Score</th>
+                                        <th class="p-4">Accuracy</th>
+                                        <th class="p-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 8: LEADERBOARD -->
+                <section id="view-leaderboard" class="page-view hidden space-y-6">
+                    <div class="text-center space-y-2 max-w-lg mx-auto">
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">AI Scholar Leaderboard</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Earn XP by completing quizzes and scoring high accuracy in AI & Machine Learning.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl overflow-hidden max-w-3xl mx-auto">
+                        <div id="leaderboard-list" class="divide-y divide-slate-100 dark:divide-slate-800">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 9: LEARNING ANALYTICS -->
+                <section id="view-analytics" class="page-view hidden space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">AI Learning Analytics</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Domain-level mastery insights derived from your quiz attempts.</p>
+                    </div>
+
+                    <div id="analytics-empty-state" class="hidden bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-800 space-y-4">
+                        <i class="fa-solid fa-chart-line text-4xl text-slate-300 dark:text-slate-700"></i>
+                        <h3 class="font-bold text-slate-800 dark:text-slate-200">No Analytics Data Available Yet</h3>
+                        <p class="text-xs text-slate-500 max-w-md mx-auto">Complete at least one AI or Machine Learning quiz to generate your personal learning progress trends.</p>
+                        <button onclick="navigateTo('explore')" class="gradient-btn px-5 py-2.5 rounded-xl font-bold text-xs text-white">Start Your First AI Quiz</button>
+                    </div>
+
+                    <div id="analytics-content" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Subject Mastery Bars -->
+                        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm">
+                            <h3 class="font-bold text-slate-900 dark:text-white text-base">AI Domain Performance</h3>
+                            <div id="analytics-subject-bars" class="space-y-4">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Insights Summary -->
+                        <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-slate-900 dark:text-white text-base mb-3">AI Competency Insights</h3>
+                                <div class="space-y-3">
+                                    <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 flex items-start gap-3">
+                                        <i class="fa-solid fa-award text-emerald-600 dark:text-emerald-400 text-lg mt-0.5"></i>
+                                        <div>
+                                            <p class="text-xs font-bold text-emerald-900 dark:text-emerald-200">Strongest AI Domain</p>
+                                            <p id="insight-strongest" class="text-xs text-emerald-700 dark:text-emerald-300 font-medium">Deep Learning</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/50 flex items-start gap-3">
+                                        <i class="fa-solid fa-triangle-exclamation text-amber-600 dark:text-amber-400 text-lg mt-0.5"></i>
+                                        <div>
+                                            <p class="text-xs font-bold text-amber-900 dark:text-amber-200">Recommended Focus Area</p>
+                                            <p id="insight-focus" class="text-xs text-amber-700 dark:text-amber-300 font-medium">Natural Language Processing</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 flex items-start gap-3">
+                                        <i class="fa-solid fa-graduation-cap text-indigo-600 dark:text-indigo-400 text-lg mt-0.5"></i>
+                                        <div>
+                                            <p class="text-xs font-bold text-indigo-900 dark:text-indigo-200">Overall Accuracy Status</p>
+                                            <p id="insight-status" class="text-xs text-indigo-700 dark:text-indigo-300 font-medium">Ready for Advanced AI Topics</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 10: ABOUT & VIVA KNOWLEDGE BASE -->
+                <section id="view-about" class="page-view hidden space-y-8">
+                    <!-- About Hero -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-xl space-y-4">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-xs font-bold">
+                            <i class="fa-solid fa-graduation-cap"></i> Academic Project Edition
+                        </div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">About QuizGenius AI</h2>
+                        <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed max-w-3xl">
+                            QuizGenius AI is a modern Single Page Web Application engineered specifically for learning, testing, and mastering Artificial Intelligence (AI) and Machine Learning (ML). Featuring 100% verified AI/ML MCQs, instant evaluation, smart topic-based question generation, offline question matching, and real-time client-side analytics.
+                        </p>
+                    </div>
+
+                    <!-- Viva Q&A Guide Accordion -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xl space-y-6">
+                        <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-book-bookmark text-brand-600"></i> AI & ML College Viva Exam Questions & Answers
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Key conceptual and architectural questions commonly asked by professors during project evaluations.</p>
+                        </div>
+
+                        <div id="viva-accordion" class="space-y-3">
+                            <!-- Populated dynamically via script -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 11: SETTINGS -->
+                <section id="view-settings" class="page-view hidden max-w-2xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Settings & Profile</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Manage your local scholar profile and quiz preferences.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xl space-y-6">
+                        <form id="settings-form" onsubmit="saveSettings(event)" class="space-y-4">
+                            <div class="space-y-2">
+                                <label for="setting-name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Display Name</label>
+                                <input id="setting-name" type="text" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold focus:outline-none focus:border-brand-500 dark:text-slate-100">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label for="setting-diff" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Default Difficulty</label>
+                                    <select id="setting-diff" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold focus:outline-none focus:border-brand-500 dark:text-slate-100">
+                                        <option value="Easy">Easy</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Hard">Hard</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="setting-qcount" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Default Question Count</label>
+                                    <select id="setting-qcount" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold focus:outline-none focus:border-brand-500 dark:text-slate-100">
+                                        <option value="5">5 Questions</option>
+                                        <option value="10">10 Questions</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="gradient-btn px-6 py-3 rounded-xl font-bold text-sm text-white shadow">Save Preferences</button>
+                        </form>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Global Submission Modal -->
+    <div id="submit-confirm-modal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-sm w-full space-y-4 text-center border border-slate-200 dark:border-slate-800 shadow-2xl">
+            <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Submit AI Quiz Now?</h3>
+            <p id="submit-modal-msg" class="text-xs text-slate-500 dark:text-slate-400">Are you sure you want to finalize your submission and calculate your score?</p>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeSubmitModal()" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">Continue Quiz</button>
+                <button onclick="finalizeQuizSubmission()" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow">Submit Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script Logic -->
+    <script>
+        /* ==========================================================================
+           1. APP STATE & GLOBAL VARIABLES
+           ========================================================================== */
+        let state = {
+            user: {
+                name: "Alex Student",
+                level: "AI & ML Scholar",
+                avatarInitials: "AS",
+                defaultDiff: "Medium",
+                defaultCount: 5
+            },
+            generatorMode: "demo", // 'demo' or 'ai'
+            history: [],
+            leaderboard: [],
+            activeQuiz: null,
+            quizSession: {
+                currentQuestionIdx: 0,
+                answers: {}, // questionIdx: selectedOptionIdx
+                reviews: {}, // questionIdx: boolean
+                timerInterval: null,
+                timeRemaining: 0,
+                timeTaken: 0,
+                isSubmitted: false
+            }
+        };
+
+        /* ==========================================================================
+           2. 100% ARTIFICIAL INTELLIGENCE & MACHINE LEARNING QUESTION BANK
+              (8 Comprehensive AI/ML Domains, 40 Verified Questions)
+           ========================================================================== */
+        const sampleQuizzes = [
+            {
+                id: "ai-foundations",
+                title: "Foundations of AI & Search Algorithms",
+                subject: "Artificial Intelligence",
+                description: "Test foundational AI concepts including state space search, the Turing Test, A* heuristics, and Minimax pruning.",
+                difficulty: "Medium",
+                questionCount: 5,
+                estimatedMinutes: 5,
+                popular: true,
+                questions: [
+                    {
+                        question: "Who is widely regarded as the 'father of Artificial Intelligence' and coined the term at the 1956 Dartmouth Conference?",
+                        options: ["Alan Turing", "John McCarthy", "Marvin Minsky", "Arthur Samuel"],
+                        correctAnswer: 1,
+                        explanation: "John McCarthy coined 'Artificial Intelligence' in 1956 at Dartmouth and developed the Lisp programming language for AI."
+                    },
+                    {
+                        question: "Which uninformed search algorithm guarantees finding the optimal path in an unweighted state space by expanding nodes layer by layer?",
+                        options: ["Depth-First Search (DFS)", "Breadth-First Search (BFS)", "Greedy Best-First Search", "Bidirectional Depth-Limited Search"],
+                        correctAnswer: 1,
+                        explanation: "Breadth-First Search (BFS) expands all nodes at depth d before moving to depth d+1, guaranteeing shortest path optimality in unweighted graphs."
+                    },
+                    {
+                        question: "In the A* heuristic search algorithm, what does the evaluation function f(n) calculate?",
+                        options: [
+                            "f(n) = g(n) - h(n)",
+                            "f(n) = g(n) + h(n)",
+                            "f(n) = g(n) * h(n)",
+                            "f(n) = max(g(n), h(n))"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "In A*, f(n) = g(n) + h(n), where g(n) is the exact cost to reach node n and h(n) is the estimated heuristic cost from n to the goal."
+                    },
+                    {
+                        question: "In two-player adversarial search, what is the primary benefit of Alpha-Beta pruning over standard Minimax?",
+                        options: [
+                            "It discovers better moves than standard Minimax",
+                            "It prunes branches that cannot influence the final decision without losing optimality",
+                            "It converts exponential state space into polynomial space",
+                            "It eliminates the need for an evaluation function"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Alpha-Beta pruning yields the exact same minimax decision as full search, but prunes branches that cannot affect the outcome, up to doubling search depth."
+                    },
+                    {
+                        question: "True or False: In A* graph search, an admissible heuristic is one that never overestimates the true cost to reach the goal state.",
+                        options: ["True", "False"],
+                        correctAnswer: 0,
+                        explanation: "True. A heuristic h(n) is admissible if 0 <= h(n) <= h*(n) for all nodes, which guarantees that A* tree search finds an optimal solution."
+                    }
+                ]
+            },
+            {
+                id: "ml-supervised",
+                title: "Supervised Machine Learning & Classifiers",
+                subject: "Machine Learning",
+                description: "Master supervised learning principles, regression vs classification, bias-variance tradeoff, SVMs, and regularization.",
+                difficulty: "Easy",
+                questionCount: 5,
+                estimatedMinutes: 5,
+                popular: true,
+                questions: [
+                    {
+                        question: "Which machine learning task involves predicting a continuous numerical target value (e.g., house price) from input features?",
+                        options: ["Classification", "Regression", "Clustering", "Dimensionality Reduction"],
+                        correctAnswer: 1,
+                        explanation: "Regression models map input features to continuous numerical outputs, while classification maps inputs to discrete category labels."
+                    },
+                    {
+                        question: "What occurs when a machine learning model fits training data too closely, capturing random noise and failing to generalize to unseen test data?",
+                        options: ["Underfitting", "Overfitting", "High Bias", "Data Leakage"],
+                        correctAnswer: 1,
+                        explanation: "Overfitting occurs when high-capacity models learn training noise, resulting in high variance, low training error, and high test error."
+                    },
+                    {
+                        question: "What is the key practical advantage of L1 Regularization (Lasso) over L2 Regularization (Ridge)?",
+                        options: [
+                            "L1 regularization guarantees global convex optimization whereas L2 does not",
+                            "L1 regularization can shrink redundant feature weights exactly to zero, performing automated feature selection",
+                            "L1 regularization prevents underfitting while L2 only prevents overfitting",
+                            "L1 regularization eliminates the need for gradient descent"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "L1 regularization adds an absolute weight penalty (|w|), creating corner intersections that drive non-essential coefficients to exactly zero (sparsity)."
+                    },
+                    {
+                        question: "Which classification algorithm constructs the hyperplane that maximizes the geometric margin between support vectors of different classes?",
+                        options: ["Naive Bayes", "K-Nearest Neighbors", "Support Vector Machine (SVM)", "Logistic Regression"],
+                        correctAnswer: 2,
+                        explanation: "Support Vector Machines (SVM) maximize the margin between parallel hyperplanes supporting data points closest to the decision boundary."
+                    },
+                    {
+                        question: "True or False: K-Nearest Neighbors (KNN) is an instance-based lazy learner that does not train an explicit parametric model during the training phase.",
+                        options: ["True", "False"],
+                        correctAnswer: 0,
+                        explanation: "True. KNN simply stores the training dataset and postpones computation until test query time, making it a non-parametric lazy learner."
+                    }
+                ]
+            },
+            {
+                id: "deep-learning-nn",
+                title: "Deep Learning & Neural Architectures",
+                subject: "Deep Learning",
+                description: "Deep dive into backpropagation, activation functions (ReLU, Sigmoid), dropout, gradient descent, and the Adam optimizer.",
+                difficulty: "Medium",
+                questionCount: 5,
+                estimatedMinutes: 5,
+                popular: true,
+                questions: [
+                    {
+                        question: "Which fundamental principle of differential calculus enables the Backpropagation algorithm to calculate loss gradients across hidden layers?",
+                        options: ["L'Hôpital's Rule", "The Chain Rule", "The Product Rule", "Taylor Series Expansion"],
+                        correctAnswer: 1,
+                        explanation: "Backpropagation recursively applies the Chain Rule of calculus to compute partial derivatives of the scalar loss with respect to each weight."
+                    },
+                    {
+                        question: "Which activation function is most susceptible to the 'dying neuron' problem where neurons output zero and permanently cease updating during training?",
+                        options: ["Sigmoid", "Standard ReLU", "Leaky ReLU", "Softmax"],
+                        correctAnswer: 1,
+                        explanation: "Standard ReLU outputs 0 for all negative inputs (gradient = 0). If a neuron is pushed into the negative zone, its weights can never update again."
+                    },
+                    {
+                        question: "What is the primary mathematical role of the Softmax function in the output layer of multi-class classification neural networks?",
+                        options: [
+                            "It clips outlier gradients to prevent gradient explosion",
+                            "It normalizes raw output logits into a valid probability distribution summing to 1",
+                            "It speeds up tensor matrix multiplication",
+                            "It dynamically deactivates 50% of the neurons"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Softmax exponentiates logits and divides by their sum: exp(z_i) / sum(exp(z_j)), ensuring outputs are positive numbers that sum to 1.0."
+                    },
+                    {
+                        question: "Why is Dropout widely used as an effective regularization technique during deep neural network training?",
+                        options: [
+                            "It sets learning rates dynamically based on gradient history",
+                            "It randomly deactivates a fraction of neurons on each training step to prevent complex co-adaptations",
+                            "It shrinks all weights toward zero proportionally to weight magnitude",
+                            "It standardizes mini-batch layer inputs to mean 0 and variance 1"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Dropout randomly sets hidden units to zero during forward propagation with probability p, preventing neurons from relying on specific co-dependent features."
+                    },
+                    {
+                        question: "True or False: The Adam optimizer integrates concepts from both AdaGrad (adaptive learning rates) and RMSProp (momentum via moving average of squared gradients).",
+                        options: ["True", "False"],
+                        correctAnswer: 0,
+                        explanation: "True. Adam (Adaptive Moment Estimation) maintains exponential moving averages of both the past gradients (first moment) and squared gradients (second moment)."
+                    }
+                ]
+            },
+            {
+                id: "nlp-transformers",
+                title: "NLP & Transformer Architectures (LLMs)",
+                subject: "Natural Language Processing",
+                description: "Understand Multi-Head Self-Attention, BERT vs GPT, positional encodings, subword tokenization, and LLM alignment with RLHF.",
+                difficulty: "Hard",
+                questionCount: 5,
+                estimatedMinutes: 5,
+                popular: true,
+                questions: [
+                    {
+                        question: "What seminal core mechanism introduced in 'Attention Is All You Need' (2017) enabled Transformers to discard recurrence and process tokens in parallel?",
+                        options: ["Long Short-Term Memory (LSTM)", "Multi-Head Self-Attention", "Gated Recurrent Units (GRU)", "Recurrent Highway Tokenization"],
+                        correctAnswer: 1,
+                        explanation: "Multi-Head Self-Attention computes Attention(Q, K, V) = softmax(Q * K^T / sqrt(d_k)) * V across all token pairs simultaneously without sequential recurrence."
+                    },
+                    {
+                        question: "How do the fundamental architectural paradigms of BERT and GPT models differ?",
+                        options: [
+                            "BERT uses an autoregressive decoder; GPT uses a bidirectional encoder",
+                            "BERT is a bidirectional encoder-only model; GPT is an autoregressive causal decoder-only model",
+                            "BERT uses recurrent LSTM cells; GPT uses convolutional feature maps",
+                            "BERT generates tokens sequentially; GPT is purely used for classification"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "BERT uses bidirectional attention across all input tokens (Masked LM), whereas GPT uses causal masked self-attention to generate tokens autoregressively from left to right."
+                    },
+                    {
+                        question: "Why are Positional Encodings strictly necessary in the Transformer architecture?",
+                        options: [
+                            "Because Transformers cannot compute dot products without integers",
+                            "Because self-attention is permutation-invariant and has no inherent sense of token sequence order",
+                            "Because attention weights must always sum to 1.0",
+                            "To compress the vocabulary size into low-dimensional embeddings"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Self-attention operations are set-based (permutation invariant). Adding positional encodings injects relative or absolute positional information into token vectors."
+                    },
+                    {
+                        question: "Which subword tokenization algorithm iteratively merges the most frequently occurring pairs of adjacent bytes or characters to build a vocabulary?",
+                        options: ["TF-IDF Tokenization", "Byte Pair Encoding (BPE)", "Bag of Words", "Porter Stemming"],
+                        correctAnswer: 1,
+                        explanation: "Byte Pair Encoding (BPE) repeatedly counts and merges frequent pairs of bytes/characters, enabling compact vocabularies that handle out-of-vocabulary words."
+                    },
+                    {
+                        question: "True or False: In Reinforcement Learning from Human Feedback (RLHF) for Large Language Models, a reward model trained on human preference comparisons guides policy optimization.",
+                        options: ["True", "False"],
+                        correctAnswer: 0,
+                        explanation: "True. RLHF trains a reward model on paired comparisons of LLM responses, then uses algorithms like PPO or DPO to align model generation with human helpfulness and safety."
+                    }
+                ]
+            },
+            {
+                id: "computer-vision-cnn",
+                title: "Computer Vision & Convolutional Nets",
+                subject: "Computer Vision",
+                description: "Explore CNN layers, Max Pooling, spatial padding, ResNet skip connections, and real-time object detection with YOLO.",
+                difficulty: "Medium",
+                questionCount: 5,
+                estimatedMinutes: 5,
+                questions: [
+                    {
+                        question: "What is the primary function of Max Pooling layers in Convolutional Neural Networks (CNNs)?",
+                        options: [
+                            "To increase the number of feature map channels",
+                            "To downsample spatial dimensions, reduce computation, and provide translation invariance",
+                            "To calculate cross-entropy loss gradients without bias",
+                            "To regularize weights using absolute value penalties"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Max pooling takes the maximum value in spatial windows (e.g., 2x2), halving resolution, controlling overfitting, and capturing scale-invariant representations."
+                    },
+                    {
+                        question: "What architectural breakthrough enabled Deep Residual Networks (ResNet) to train over 100 layers without suffering from vanishing gradients?",
+                        options: [
+                            "Global Average Pooling",
+                            "Residual skip connections (identity shortcut mappings)",
+                            "Dilated Convolutions",
+                            "Dropout applied to convolutional filters"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "ResNet introduced identity shortcut connections F(x) + x, allowing gradients to propagate directly through the computational graph without attenuation."
+                    },
+                    {
+                        question: "Which computer vision architecture revolutionized real-time object detection by predicting bounding boxes and class probabilities in a single forward pass?",
+                        options: ["R-CNN", "Fast R-CNN", "YOLO (You Only Look Once)", "Selective Search Network"],
+                        correctAnswer: 2,
+                        explanation: "YOLO reframes object detection as a single regression problem, directly predicting coordinates and class probabilities across grid cells in real-time."
+                    },
+                    {
+                        question: "What is the result of applying 'Same' padding with stride 1 to an input image during a 2D convolution operation?",
+                        options: [
+                            "The output feature map has the exact same spatial dimensions (height and width) as the input",
+                            "The spatial dimensions are halved automatically",
+                            "All edge pixels are converted to zero",
+                            "Color channels are collapsed into grayscale"
+                        ],
+                        correctAnswer: 0,
+                        explanation: "'Same' padding adds appropriate zero padding around borders such that Output Size = (Input - Filter + 2P)/Stride + 1 = Input Size."
+                    },
+                    {
+                        question: "True or False: Transfer learning in Computer Vision allows a model pre-trained on ImageNet to be fine-tuned on a smaller domain dataset with substantially faster convergence.",
+                        options: ["True", "False"],
+                        correctAnswer: 0,
+                        explanation: "True. Early convolutional layers learn generic visual primitives (edges, textures) that transfer effectively to novel vision tasks with minimal training data."
+                    }
+                ]
+            },
+            {
+                id: "unsupervised-clustering",
+                title: "Unsupervised Learning & Clustering",
+                subject: "Machine Learning",
+                description: "Assess K-Means clustering, Within-Cluster Sum of Squares, PCA dimensionality reduction, DBSCAN, and Autoencoders.",
+                difficulty: "Medium",
+                questionCount: 5,
+                estimatedMinutes: 5,
+                questions: [
+                    {
+                        question: "In the K-Means clustering algorithm, what objective function does the iterative update step seek to minimize?",
+                        options: [
+                            "Cross-Entropy Loss",
+                            "Within-Cluster Sum of Squares (Inertia)",
+                            "Hinge Loss",
+                            "Kullback-Leibler Divergence"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "K-Means alternates between assigning points to closest centroids and recomputing centroids to minimize the Within-Cluster Sum of Squares (WCSS)."
+                    },
+                    {
+                        question: "What is the primary mathematical objective of Principal Component Analysis (PCA)?",
+                        options: [
+                            "To partition data into spherical non-overlapping clusters",
+                            "To project high-dimensional data onto orthogonal axes that maximize data variance and minimize reconstruction error",
+                            "To optimize multi-layer perceptron weights using stochastic gradient descent",
+                            "To estimate posterior probability distributions using Bayes' theorem"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "PCA calculates eigenvectors of the covariance matrix, projecting features onto orthogonal principal axes sorted in decreasing order of explained variance."
+                    },
+                    {
+                        question: "Which graphical heuristic is commonly plotted to determine the optimal number of clusters K in K-Means clustering?",
+                        options: ["The Elbow Method", "ROC Curve", "Precision-Recall Curve", "Confusion Matrix"],
+                        correctAnswer: 0,
+                        explanation: "The Elbow Method plots WCSS against K; the 'elbow' point where the rate of decrease abruptly flattens indicates the optimal cluster count."
+                    },
+                    {
+                        question: "Which clustering algorithm identifies clusters of arbitrary non-spherical shapes and labels noise points as outliers using density connectivity?",
+                        options: ["K-Means", "DBSCAN", "Gaussian Mixture Models (GMM)", "Principal Component Clustering"],
+                        correctAnswer: 1,
+                        explanation: "DBSCAN (Density-Based Spatial Clustering of Applications with Noise) groups points that have high local neighborhood density (eps, minPts), identifying arbitrary shapes and noise."
+                    },
+                    {
+                        question: "True or False: An Autoencoder is an unsupervised neural network trained to compress inputs into a lower-dimensional bottleneck latent code and reconstruct the original input.",
+                        options: ["True", "False"],
+                        correctAnswer: 0,
+                        explanation: "True. Autoencoders consist of an Encoder that maps x to latent code z and a Decoder that reconstructs x_hat, trained to minimize reconstruction loss ||x - x_hat||^2."
+                    }
+                ]
+            },
+            {
+                id: "reinforcement-learning",
+                title: "Reinforcement Learning & Decision Agents",
+                subject: "Reinforcement Learning",
+                description: "Examine Markov Decision Processes (MDP), the Bellman equation, Exploration vs Exploitation, and Q-Learning algorithms.",
+                difficulty: "Hard",
+                questionCount: 5,
+                estimatedMinutes: 5,
+                questions: [
+                    {
+                        question: "What standard mathematical framework provides the formal foundation for defining sequential decision-making in Reinforcement Learning?",
+                        options: ["Markov Decision Process (MDP)", "Stochastic Gradient Descent", "Linear Dynamical Systems", "Bayesian Belief Networks"],
+                        correctAnswer: 0,
+                        explanation: "An MDP is defined by a 5-tuple (S, A, P, R, gamma), formalizing environments where states satisfy the Markov property."
+                    },
+                    {
+                        question: "In the Bellman equation, what does the discount factor gamma (between 0 and 1) control?",
+                        options: [
+                            "The gradient step size for policy updates",
+                            "The relative weight and importance of immediate rewards compared to future cumulative rewards",
+                            "The probability of selecting a random exploratory action",
+                            "The maximum number of steps allowed per episode"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "The discount factor gamma in [0, 1) discounts future rewards R_{t+k} by gamma^k, ensuring mathematical convergence and balancing short-term vs long-term planning."
+                    },
+                    {
+                        question: "What fundamental dilemma in Reinforcement Learning requires balancing trying unfamiliar actions to discover rewards against choosing known high-reward actions?",
+                        options: [
+                            "Bias-Variance Dilemma",
+                            "Exploration vs. Exploitation Dilemma",
+                            "Vanishing vs. Exploding Gradients",
+                            "Overfitting vs. Underfitting Tradeoff"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "The Exploration vs. Exploitation dilemma balances gathering information about unknown state-actions (exploration) with maximizing return based on current knowledge (exploitation)."
+                    },
+                    {
+                        question: "Why is Q-Learning classified as an 'off-policy' Temporal Difference learning algorithm?",
+                        options: [
+                            "Because it cannot learn without human feedback labels",
+                            "Because it learns the value of the optimal greedy policy while following an exploratory behavior policy (e.g., epsilon-greedy)",
+                            "Because it requires a complete transition model of the environment",
+                            "Because it updates state values only after an entire episode terminates"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "Q-learning updates Q(s, a) using the maximum Q-value of the next state: max_a' Q(s', a'), which is independent of the action actually chosen by the behavior policy."
+                    },
+                    {
+                        question: "True or False: The Markov Property states that the future state depends solely on the current state and action, and is conditionally independent of all past history.",
+                        options: ["True", "False"],
+                        correctAnswer: 0,
+                        explanation: "True. P(S_{t+1}=s' | S_t=s, A_t=a, S_{t-1}, ...) = P(S_{t+1}=s' | S_t=s, A_t=a). The current state contains all necessary historical information."
+                    }
+                ]
+            },
+            {
+                id: "ai-ethics-evaluation",
+                title: "AI Ethics, Bias & Model Evaluation",
+                subject: "AI Ethics & Evaluation",
+                description: "Master evaluation metrics (Precision, Recall, F1-Score, ROC-AUC), class imbalance pitfalls, data leakage, and algorithmic fairness.",
+                difficulty: "Medium",
+                questionCount: 5,
+                estimatedMinutes: 5,
+                popular: true,
+                questions: [
+                    {
+                        question: "In highly imbalanced datasets (e.g., rare cancer or credit card fraud where 99.9% of samples are negative), why is Accuracy a dangerously misleading metric?",
+                        options: [
+                            "Because accuracy cannot be mathematically computed for binary tasks",
+                            "Because a naive model predicting only the majority class achieves 99.9% accuracy while detecting zero true fraud cases",
+                            "Because accuracy varies with feature scaling and normalization",
+                            "Because accuracy requires calibrated probability thresholds"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "In class imbalance, predicting the dominant class yields high accuracy despite failing to predict the minority class of interest. Precision, Recall, and F1 are required."
+                    },
+                    {
+                        question: "The F1-Score represents which mathematical relationship between Precision and Recall?",
+                        options: [
+                            "Arithmetic Mean: (Precision + Recall) / 2",
+                            "Harmonic Mean: 2 * (Precision * Recall) / (Precision + Recall)",
+                            "Geometric Mean: sqrt(Precision * Recall)",
+                            "Squared Euclidean Distance"
+                        ],
+                        correctAnswer: 1,
+                        explanation: "The F1-Score is the harmonic mean of Precision and Recall, heavily penalizing models where either precision or recall is disproportionately close to zero."
+                    },
+                    {
+                        question: "Which metric represents the proportion of actual positive cases that were correctly identified by the machine learning model?",
+                        options: ["Precision", "Recall (Sensitivity / True Positive Rate)", "Specificity", "False Positive Rate"],
+                        correctAnswer: 1,
+                        explanation: "Recall = True Positives / (True Positives + False Negatives). It measures the model's ability to find all relevant instances in the dataset."
+                    },
+                    {
+                        question: "What occurs when information from test datasets or target outcomes is inadvertently exposed to a model during training or feature preprocessing?",
+                        options: ["Underfitting", "Data Leakage", "Gradient Explosion", "Adversarial Perturbation"],
+                        correctAnswer: 1,
+                        explanation: "Data leakage occurs when test data informs training (e.g., scaling features before train-test split), creating artificially high validation scores that fail in production."
+                    },
+                    {
+                        question: "True or False: Algorithmic bias in AI models can persist even after removing protected demographic attributes (e.g., race or gender) if proxy variables correlate with those attributes.",
+                        options: ["True", "False"],
+                        correctAnswer: 0,
+                        explanation: "True. Feature proxies such as ZIP codes, browsing patterns, or education history can strongly correlate with sensitive attributes, reproducing systemic biases."
+                    }
+                ]
+            }
+        ];
+
+        /* ==========================================================================
+           3. ROUTING & NAVIGATION ENGINE
+           ========================================================================== */
+        function navigateTo(viewId) {
+            // If leaving quiz taking view, pause/clear timer
+            if (viewId !== 'quiz' && state.quizSession.timerInterval) {
+                clearInterval(state.quizSession.timerInterval);
+                state.quizSession.timerInterval = null;
+            }
+
+            // Hide all views
+            document.querySelectorAll('.page-view').forEach(view => view.classList.add('hidden'));
+
+            // Show selected view
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            // Update Desktop Sidebar active styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const navKey = btn.getAttribute('data-nav');
+                if (navKey === viewId) {
+                    btn.className = "nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm bg-brand-50 text-brand-600 dark:bg-brand-950/50 dark:text-brand-400 transition";
+                } else {
+                    btn.className = "nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200 transition";
+                }
+            });
+
+            // Refresh specific view data on load
+            if (viewId === 'dashboard') updateDashboardData();
+            if (viewId === 'explore') renderExploreGrid();
+            if (viewId === 'history') renderHistoryTable();
+            if (viewId === 'leaderboard') renderLeaderboard();
+            if (viewId === 'analytics') renderAnalytics();
+            if (viewId === 'about') renderVivaAccordion();
+            if (viewId === 'settings') populateSettingsForm();
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('quizgenius_theme', isDark ? 'dark' : 'light');
+        }
+
+        /* ==========================================================================
+           4. DASHBOARD & STATS LOGIC
+           ========================================================================== */
+        function updateDashboardData() {
+            const history = state.history;
+            const completedCount = history.length;
+
+            let totalAns = 0;
+            let totalPctSum = 0;
+            let bestPct = 0;
+
+            history.forEach(item => {
+                totalAns += item.totalQuestions;
+                totalPctSum += item.scorePct;
+                if (item.scorePct > bestPct) bestPct = item.scorePct;
+            });
+
+            const avgPct = completedCount > 0 ? Math.round(totalPctSum / completedCount) : 0;
+
+            document.getElementById('stat-completed').innerText = completedCount;
+            document.getElementById('stat-avg-score').innerText = `${avgPct}%`;
+            document.getElementById('stat-best-score').innerText = `${bestPct}%`;
+            document.getElementById('stat-total-q').innerText = totalAns;
+
+            // Render Recent Attempts list
+            const recentList = document.getElementById('recent-activity-list');
+            if (completedCount === 0) {
+                recentList.innerHTML = `
+                    <div class="p-6 text-center text-slate-400 dark:text-slate-500 text-xs font-medium">
+                        No recent AI quiz attempts found. Start a quiz to build your learning record!
+                    </div>
+                `;
+                return;
+            }
+
+            recentList.innerHTML = history.slice(0, 3).map((item, hIdx) => `
+                <div class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl ${item.scorePct >= 70 ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'} font-bold flex items-center justify-center text-sm">
+                            ${item.scorePct}%
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900 dark:text-white">${escapeHTML(item.title)}</h4>
+                            <p class="text-[10px] text-slate-500">${escapeHTML(item.subject)} • ${item.date}</p>
+                        </div>
+                    </div>
+                    <button onclick="retryHistoryQuiz(${hIdx})" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-brand-500 hover:text-white text-[11px] font-bold text-slate-700 dark:text-slate-200 transition">
+                        Retry
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        /* ==========================================================================
+           5. EXPLORE QUIZZES FILTERING & SORTING
+           ========================================================================== */
+        function renderExploreGrid() {
+            const grid = document.getElementById('quiz-cards-grid');
+            const searchVal = (document.getElementById('quiz-search-input').value || '').trim().toLowerCase();
+            const subjectVal = document.getElementById('filter-subject').value;
+            const diffVal = document.getElementById('filter-difficulty').value;
+            const sortVal = document.getElementById('sort-quizzes').value;
+
+            let filtered = sampleQuizzes.filter(q => {
+                const matchesSearch = !searchVal || 
+                    q.title.toLowerCase().includes(searchVal) || 
+                    q.description.toLowerCase().includes(searchVal) ||
+                    q.subject.toLowerCase().includes(searchVal);
+                const matchesSubject = (subjectVal === 'All') || q.subject === subjectVal;
+                const matchesDiff = (diffVal === 'All') || q.difficulty === diffVal;
+                return matchesSearch && matchesSubject && matchesDiff;
+            });
+
+            if (sortVal === 'shortest') {
+                filtered.sort((a, b) => a.estimatedMinutes - b.estimatedMinutes);
+            } else if (sortVal === 'popular') {
+                filtered.sort((a, b) => (b.popular ? 1 : 0) - (a.popular ? 1 : 0));
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-400 dark:text-slate-500 space-y-2">
+                        <i class="fa-solid fa-magnifying-glass text-3xl"></i>
+                        <p class="text-sm font-semibold">No AI/ML quizzes found matching your filter criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(q => `
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-brand-50 text-brand-600 dark:bg-brand-950 dark:text-brand-300">
+                                ${escapeHTML(q.subject)}
+                            </span>
+                            <span class="text-xs font-semibold text-slate-400">
+                                <i class="fa-solid fa-signal text-[10px] mr-1"></i>${q.difficulty}
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base leading-snug">${escapeHTML(q.title)}</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">${escapeHTML(q.description)}</p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-slate-400">
+                            <i class="fa-regular fa-clock mr-1"></i>${q.estimatedMinutes} mins • ${q.questionCount} Qs
+                        </span>
+                        <button onclick="startPresetQuiz('${q.id}')" class="px-4 py-2 rounded-xl gradient-btn text-white font-bold text-xs shadow-sm">
+                            Start Quiz
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterQuizzes() {
+            renderExploreGrid();
+        }
+
+        /* ==========================================================================
+           6. AI & DEMO QUIZ GENERATOR ENGINE (100% AI/ML FOCUSED)
+           ========================================================================== */
+        function toggleGeneratorMode() {
+            state.generatorMode = state.generatorMode === 'demo' ? 'ai' : 'demo';
+            const btn = document.getElementById('toggle-gen-mode-btn');
+            const desc = document.getElementById('gen-mode-desc');
+            const keyWrap = document.getElementById('gemini-key-wrapper');
+
+            if (state.generatorMode === 'ai') {
+                btn.innerText = "Engine: Live Gemini AI";
+                btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-secondary-600 text-white shadow-sm shrink-0";
+                desc.innerText = "Direct AI connection enabled. Connects to Gemini API for dynamic generation.";
+                keyWrap.classList.remove('hidden');
+            } else {
+                btn.innerText = "Engine: Smart Local Mode";
+                btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition shadow-sm shrink-0";
+                desc.innerText = "Intelligent Offline AI/ML Engine matches and synthesizes domain questions instantly. Switch to Live Gemini API for direct cloud AI generation.";
+                keyWrap.classList.add('hidden');
+            }
+        }
+
+        async function handleQuizGeneration(e) {
+            e.preventDefault();
+            const topic = document.getElementById('gen-topic').value.trim();
+            const subject = document.getElementById('gen-subject').value;
+            const difficulty = document.getElementById('gen-difficulty').value;
+            const count = parseInt(document.getElementById('gen-count').value, 10);
+            const qType = document.getElementById('gen-type').value;
+            const timerSecs = parseInt(document.getElementById('gen-timer').value, 10);
+            const goal = document.getElementById('gen-goal').value.trim();
+
+            if (!topic) {
+                showToast("Please enter an AI/ML topic for your quiz.", "error");
+                return;
+            }
+
+            // Show Loading Overlay
+            document.getElementById('gen-loading-modal').classList.remove('hidden');
+
+            try {
+                let generatedQuestions = [];
+                let quizTitle = `${topic} Assessment`;
+
+                if (state.generatorMode === 'ai') {
+                    const customKey = document.getElementById('gemini-api-key').value.trim();
+                    try {
+                        generatedQuestions = await fetchGeminiQuiz(topic, subject, difficulty, count, qType, goal, customKey);
+                    } catch (apiErr) {
+                        console.warn("Gemini API call failed, falling back to smart local engine:", apiErr);
+                        showToast("API unavailable or key missing. Generated via smart AI/ML engine.", "info");
+                        generatedQuestions = generateSmartAIQuestions(topic, subject, difficulty, count, qType);
+                    }
+                } else {
+                    // Local Demo Generator Delay for realistic feel
+                    await new Promise(r => setTimeout(r, 1000));
+                    generatedQuestions = generateSmartAIQuestions(topic, subject, difficulty, count, qType);
+                }
+
+                document.getElementById('gen-loading-modal').classList.add('hidden');
+
+                if (!generatedQuestions || generatedQuestions.length === 0) {
+                    showToast("Failed to formulate questions. Loading preset AI quiz.", "warning");
+                    startPresetQuiz('ai-foundations');
+                    return;
+                }
+
+                // Launch Active Quiz
+                const newQuizObj = {
+                    id: `gen-${Date.now()}`,
+                    title: quizTitle,
+                    subject: subject,
+                    difficulty: difficulty,
+                    timerPerQuestion: timerSecs,
+                    questions: generatedQuestions,
+                    isAIGenerated: true
+                };
+
+                initQuizSession(newQuizObj);
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('gen-loading-modal').classList.add('hidden');
+                showToast("Error during generation. Loaded smart AI backup.", "warning");
+                const fallbackQs = generateSmartAIQuestions(topic, subject, difficulty, count, qType);
+                initQuizSession({
+                    id: `gen-${Date.now()}`,
+                    title: `${topic} (AI Practice)`,
+                    subject: subject,
+                    difficulty: difficulty,
+                    timerPerQuestion: timerSecs,
+                    questions: fallbackQs,
+                    isAIGenerated: true
+                });
+            }
+        }
+
+        // Live Gemini API Fetch Function
+        async function fetchGeminiQuiz(topic, subject, difficulty, count, qType, goal, apiKey) {
+            const systemPrompt = `You are an expert Artificial Intelligence and Machine Learning professor. Generate strict JSON ONLY adhering to this array schema:
+            [
+              {
+                "question": "Clear AI/ML question stem...",
+                "options": ["Option A", "Option B", "Option C", "Option D"],
+                "correctAnswer": 0,
+                "explanation": "Detailed conceptual explanation..."
+              }
+            ]`;
+
+            const userPrompt = `Generate a ${count}-question ${difficulty} multiple-choice quiz on the topic "${topic}" within ${subject}.
+            Format: ${qType}. Goal: ${goal || 'Mastering core AI and Machine Learning concepts'}.
+            For True/False questions, options must be exactly ["True", "False"]. CorrectAnswer must be the 0-based integer index of the correct option.`;
+
+            const keyParam = apiKey ? `key=${apiKey}` : '';
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?${keyParam}`;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: userPrompt }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: { responseMimeType: "application/json" }
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!text) throw new Error("Empty AI response");
+
+            const parsed = JSON.parse(text);
+            return parsed;
+        }
+
+        // Domain-Aware Smart AI & Machine Learning Question Generator
+        function generateSmartAIQuestions(topic, subject, difficulty, count, qType) {
+            const lowerTopic = topic.toLowerCase();
+
+            // Broad repository of AI/ML conceptual questions
+            const pool = [
+                {
+                    match: ["backprop", "gradient", "gradient descent", "loss", "optimizer", "adam", "learning rate"],
+                    question: `In training systems for ${topic}, what role does the Learning Rate parameter play during gradient descent updates?`,
+                    options: [
+                        "It determines the size of the weight update step taken in the opposite direction of the gradient",
+                        "It controls the number of hidden layers created in the network",
+                        "It sets the upper limit for cross-entropy batch normalization",
+                        "It calculates the ratio of precision to recall"
+                    ],
+                    correctAnswer: 0,
+                    explanation: `In ${topic}, the learning rate (eta) scales the gradient step. If too small, training converges very slowly; if too large, it may oscillate or diverge.`
+                },
+                {
+                    match: ["overfit", "bias", "variance", "regularization", "l1", "l2", "dropout"],
+                    question: `When deploying models for ${topic}, which technique is most effective for preventing Overfitting?`,
+                    options: [
+                        "Increasing model parameters without adding data",
+                        "Applying L1/L2 regularization, dropout, and early stopping",
+                        "Evaluating purely on the training dataset",
+                        "Removing the validation split entirely"
+                    ],
+                    correctAnswer: 1,
+                    explanation: `Techniques like weight regularization (L1/L2), dropout, and early stopping constrain model capacity and penalize over-complexity in ${topic}.`
+                },
+                {
+                    match: ["transformer", "attention", "nlp", "llm", "bert", "gpt", "language"],
+                    question: `In modern NLP architectures applied to ${topic}, what is the key advantage of the Scaled Dot-Product Attention mechanism?`,
+                    options: [
+                        "It computes relevance weights between every pair of input tokens in parallel",
+                        "It eliminates all vector embeddings permanently",
+                        "It converts text into recurrent Markov sequences",
+                        "It restricts the model to 8-bit integer operations"
+                    ],
+                    correctAnswer: 0,
+                    explanation: `In ${topic}, Scaled Dot-Product Attention (Q*K^T / sqrt(d_k)) computes cross-token dependencies across the entire sequence simultaneously.`
+                },
+                {
+                    match: ["cnn", "vision", "image", "conv", "filter", "pooling", "detection"],
+                    question: `In Convolutional Neural Networks for ${topic}, what is the purpose of Convolving a filter/kernel over an input image?`,
+                    options: [
+                        "To extract local spatial features like edges, textures, and shapes using shared weights",
+                        "To compress the image into a scalar label directly",
+                        "To perform principal component matrix inversion",
+                        "To invert the color channels to grayscale"
+                    ],
+                    correctAnswer: 0,
+                    explanation: `Convolution in ${topic} applies sliding spatial kernels with shared weights to construct localized feature maps with spatial invariance.`
+                },
+                {
+                    match: ["reinforce", "rl", "q-learning", "agent", "reward", "policy", "mdp"],
+                    question: `In Reinforcement Learning applied to ${topic}, what defines the Agent's Policy function pi(a | s)?`,
+                    options: [
+                        "The probability distribution over possible actions given the current environment state",
+                        "The immediate scalar numerical reward received from state transitions",
+                        "The discount rate applied to episodic termination",
+                        "The total number of parameters in the replay buffer"
+                    ],
+                    correctAnswer: 0,
+                    explanation: `In ${topic}, the policy pi maps environmental states to action selection probabilities, defining the agent's behavior strategy.`
+                },
+                {
+                    match: ["cluster", "k-means", "pca", "unsupervised", "dimension"],
+                    question: `In unsupervised modeling for ${topic}, how does Principal Component Analysis (PCA) reduce dimensionality?`,
+                    options: [
+                        "By projecting features onto orthogonal axes that maximize variance and minimize information loss",
+                        "By deleting all negative eigenvalues from data rows",
+                        "By running logistic regression over unlabeled clusters",
+                        "By fitting polynomial decision boundaries"
+                    ],
+                    correctAnswer: 0,
+                    explanation: `PCA transforms correlated features into uncorrelated principal components ordered by the amount of variance explained in ${topic}.`
+                },
+                {
+                    match: ["metric", "eval", "accuracy", "f1", "precision", "recall", "roc"],
+                    question: `When evaluating classification performance in ${topic}, what does high Precision specifically indicate?`,
+                    options: [
+                        "A low rate of False Positive predictions among all predicted positive instances",
+                        "A low rate of False Negative predictions across actual targets",
+                        "That the model has zero variance and low bias",
+                        "That the training loss reached exact zero"
+                    ],
+                    correctAnswer: 0,
+                    explanation: `Precision = TP / (TP + FP). High precision indicates that when the model predicts a positive class in ${topic}, it is almost always correct.`
+                },
+                {
+                    match: ["svm", "tree", "forest", "random", "classifier", "regression"],
+                    question: `Why is an Ensemble of Decision Trees (Random Forest) generally superior to a single individual Decision Tree in ${topic}?`,
+                    options: [
+                        "Averaging predictions across multiple decorrelated trees significantly reduces variance and overfitting",
+                        "Random Forests use fewer parameters than single trees",
+                        "Individual decision trees cannot handle numerical data",
+                        "Random Forests guarantee 100% training accuracy"
+                    ],
+                    correctAnswer: 0,
+                    explanation: `Random Forest builds an ensemble of trees via bootstrap aggregation (bagging) and random feature subsets, substantially dampening individual variance.`
+                },
+                {
+                    match: ["neural", "deep", "activation", "sigmoid", "relu"],
+                    question: `Why are non-linear activation functions (e.g., ReLU, GELU, Sigmoid) indispensable in Deep Learning models for ${topic}?`,
+                    options: [
+                        "Without non-linear activations, multi-layer networks collapse mathematically into a simple single-layer linear model",
+                        "To prevent computer memory overflows during forward passes",
+                        "To enforce all weights to remain positive numbers",
+                        "To avoid calculating partial derivatives"
+                    ],
+                    correctAnswer: 0,
+                    explanation: `The composition of linear functions is always linear. Non-linear activations enable neural networks to approximate arbitrary complex functions.`
+                },
+                {
+                    match: ["search", "heuristic", "ai", "turing", "agent"],
+                    question: `In heuristic state space search for ${topic}, what condition guarantees that A* Search produces an optimal shortest-path solution?`,
+                    options: [
+                        "The heuristic function h(n) must be admissible (never overestimating the true cost to the goal)",
+                        "The search graph must have zero cyclic paths",
+                        "Depth-First Search must be run prior to A*",
+                        "The heuristic function must equal zero for all nodes"
+                    ],
+                    correctAnswer: 0,
+                    explanation: `In ${topic}, an admissible heuristic ensures that A* never prunes an optimal path in favor of a superficially lower estimate.`
+                }
+            ];
+
+            // Filter or prioritize questions matching the topic keywords
+            let matchedQuestions = pool.filter(q => q.match.some(keyword => lowerTopic.includes(keyword)));
+
+            // If not enough keyword matches, append remaining AI/ML pool questions
+            if (matchedQuestions.length < count) {
+                const remaining = pool.filter(q => !matchedQuestions.includes(q));
+                matchedQuestions = matchedQuestions.concat(remaining);
+            }
+
+            // Shuffle slightly
+            matchedQuestions = matchedQuestions.slice(0, count);
+
+            // If user requested True/False format, convert questions appropriately
+            if (qType === 'TF') {
+                return matchedQuestions.map((q, idx) => ({
+                    question: `True or False: In ${topic}, ${q.question.replace(/^In [^,]+,\s*/, '').replace(/\?$/, '.')}`,
+                    options: ["True", "False"],
+                    correctAnswer: idx % 2 === 0 ? 0 : 1,
+                    explanation: q.explanation
+                }));
+            }
+
+            // If user requested Mixed format
+            if (qType === 'Mixed') {
+                return matchedQuestions.map((q, idx) => {
+                    if (idx % 2 === 1) {
+                        return {
+                            question: `True or False: In ${topic}, ${q.question.replace(/^In [^,]+,\s*/, '').replace(/\?$/, '.')}`,
+                            options: ["True", "False"],
+                            correctAnswer: 0,
+                            explanation: q.explanation
+                        };
+                    }
+                    return q;
+                });
+            }
+
+            return matchedQuestions;
+        }
+
+        /* ==========================================================================
+           7. ACTIVE QUIZ TAKING INTERFACE ENGINE
+           ========================================================================== */
+        function startPresetQuiz(quizId) {
+            const found = sampleQuizzes.find(q => q.id === quizId);
+            if (!found) {
+                showToast("AI Quiz preset not found.", "error");
+                return;
+            }
+            initQuizSession({
+                id: found.id,
+                title: found.title,
+                subject: found.subject,
+                difficulty: found.difficulty,
+                timerPerQuestion: 25,
+                questions: JSON.parse(JSON.stringify(found.questions)),
+                isAIGenerated: false
+            });
+        }
+
+        function retryHistoryQuiz(historyIdx) {
+            const item = state.history[historyIdx];
+            if (!item) return;
+
+            // Check if preset
+            const foundPreset = sampleQuizzes.find(q => q.id === item.quizId);
+            if (foundPreset) {
+                startPresetQuiz(foundPreset.id);
+                return;
+            }
+
+            // Check if questions were preserved in the history record
+            if (item.questions && item.questions.length > 0) {
+                initQuizSession({
+                    id: item.quizId,
+                    title: item.title,
+                    subject: item.subject,
+                    difficulty: "Medium",
+                    timerPerQuestion: 25,
+                    questions: JSON.parse(JSON.stringify(item.questions)),
+                    isAIGenerated: true
+                });
+                return;
+            }
+
+            // Fallback: start matching preset
+            startPresetQuiz('ai-foundations');
+        }
+
+        function retryLastQuiz() {
+            if (state.activeQuiz) {
+                initQuizSession(state.activeQuiz);
+            } else {
+                navigateTo('explore');
+            }
+        }
+
+        function initQuizSession(quizObj) {
+            // Clear any active timer intervals
+            if (state.quizSession.timerInterval) {
+                clearInterval(state.quizSession.timerInterval);
+                state.quizSession.timerInterval = null;
+            }
+
+            state.activeQuiz = quizObj;
+            state.quizSession = {
+                currentQuestionIdx: 0,
+                answers: {},
+                reviews: {},
+                timerInterval: null,
+                timeRemaining: quizObj.timerPerQuestion || 0,
+                timeTaken: 0,
+                isSubmitted: false
+            };
+
+            // Setup Header Elements
+            document.getElementById('active-quiz-title').innerText = quizObj.title;
+            document.getElementById('active-quiz-diff').innerText = quizObj.difficulty;
+            document.getElementById('active-quiz-badge').innerText = quizObj.isAIGenerated ? "AI Generated" : "AI Library Preset";
+            document.getElementById('quiz-q-total').innerText = quizObj.questions.length;
+
+            // Timer Setup
+            const timerBox = document.getElementById('quiz-timer-box');
+            if (quizObj.timerPerQuestion > 0) {
+                timerBox.classList.remove('hidden');
+                resetTimerForQuestion();
+            } else {
+                timerBox.classList.add('hidden');
+            }
+
+            navigateTo('quiz');
+            renderCurrentQuestion();
+        }
+
+        function resetTimerForQuestion() {
+            if (state.quizSession.timerInterval) {
+                clearInterval(state.quizSession.timerInterval);
+            }
+
+            const timerSecs = state.activeQuiz.timerPerQuestion;
+            if (!timerSecs) return;
+
+            state.quizSession.timeRemaining = timerSecs;
+            updateTimerUI();
+
+            state.quizSession.timerInterval = setInterval(() => {
+                state.quizSession.timeRemaining--;
+                state.quizSession.timeTaken++;
+                updateTimerUI();
+
+                if (state.quizSession.timeRemaining <= 0) {
+                    clearInterval(state.quizSession.timerInterval);
+                    showToast("Time expired for this question! Advancing.", "warning");
+                    if (state.quizSession.currentQuestionIdx < state.activeQuiz.questions.length - 1) {
+                        nextQuestion();
+                    } else {
+                        finalizeQuizSubmission();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const secs = Math.max(0, state.quizSession.timeRemaining);
+            const timerText = document.getElementById('quiz-timer-text');
+            timerText.innerText = `00:${secs < 10 ? '0' : ''}${secs}`;
+            if (secs <= 5) {
+                timerText.className = "text-base font-mono font-extrabold text-rose-500 animate-pulse";
+            } else {
+                timerText.className = "text-base font-mono font-extrabold text-slate-900 dark:text-white";
+            }
+        }
+
+        function renderCurrentQuestion() {
+            const quiz = state.activeQuiz;
+            const idx = state.quizSession.currentQuestionIdx;
+            const q = quiz.questions[idx];
+
+            // Progress text & fill
+            document.getElementById('quiz-q-current').innerText = idx + 1;
+            const pct = Math.round(((idx + 1) / quiz.questions.length) * 100);
+            document.getElementById('quiz-progress-pct').innerText = `${pct}% Completed`;
+            document.getElementById('quiz-progress-fill').style.width = `${pct}%`;
+
+            // Question Text & Category Tag
+            document.getElementById('q-category-tag').innerText = quiz.subject;
+            document.getElementById('question-text').innerText = q.question;
+
+            // Render Options
+            const container = document.getElementById('options-container');
+            const selectedOpt = state.quizSession.answers[idx];
+
+            container.innerHTML = q.options.map((optText, optIdx) => {
+                const isSelected = selectedOpt === optIdx;
+                const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
+
+                return `
+                    <div onclick="selectAnswerOption(${optIdx})" class="option-card p-4 rounded-2xl border ${isSelected ? 'bg-brand-50/90 border-brand-500 dark:bg-brand-950/50 dark:border-brand-500 ring-2 ring-brand-500/20 shadow-sm' : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'} cursor-pointer flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl ${isSelected ? 'bg-brand-500 text-white' : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600'} font-bold text-xs flex items-center justify-center shrink-0">
+                                ${letter}
+                            </span>
+                            <span class="text-xs md:text-sm font-semibold text-slate-800 dark:text-slate-200">${escapeHTML(optText)}</span>
+                        </div>
+                        <div class="w-5 h-5 rounded-full border ${isSelected ? 'border-brand-500 bg-brand-500 text-white' : 'border-slate-300 dark:border-slate-600'} flex items-center justify-center text-[10px]">
+                            ${isSelected ? '<i class="fa-solid fa-check"></i>' : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Mark for Review state
+            const markBtn = document.getElementById('mark-review-btn');
+            if (state.quizSession.reviews[idx]) {
+                markBtn.className = "px-3 py-1 rounded-lg text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 flex items-center gap-1.5";
+            } else {
+                markBtn.className = "px-3 py-1 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5";
+            }
+
+            // Prev / Next button states
+            document.getElementById('prev-btn').disabled = (idx === 0);
+            if (idx === quiz.questions.length - 1) {
+                document.getElementById('next-btn').classList.add('hidden');
+                document.getElementById('submit-quiz-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('next-btn').classList.remove('hidden');
+                document.getElementById('submit-quiz-btn').classList.add('hidden');
+            }
+
+            renderQuestionMatrix();
+        }
+
+        function selectAnswerOption(optIdx) {
+            const idx = state.quizSession.currentQuestionIdx;
+            state.quizSession.answers[idx] = optIdx;
+            renderCurrentQuestion();
+        }
+
+        function clearCurrentSelection() {
+            const idx = state.quizSession.currentQuestionIdx;
+            delete state.quizSession.answers[idx];
+            renderCurrentQuestion();
+        }
+
+        function toggleMarkForReview() {
+            const idx = state.quizSession.currentQuestionIdx;
+            state.quizSession.reviews[idx] = !state.quizSession.reviews[idx];
+            renderCurrentQuestion();
+        }
+
+        function nextQuestion() {
+            if (state.quizSession.currentQuestionIdx < state.activeQuiz.questions.length - 1) {
+                state.quizSession.currentQuestionIdx++;
+                if (state.activeQuiz.timerPerQuestion > 0) resetTimerForQuestion();
+                renderCurrentQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (state.quizSession.currentQuestionIdx > 0) {
+                state.quizSession.currentQuestionIdx--;
+                if (state.activeQuiz.timerPerQuestion > 0) resetTimerForQuestion();
+                renderCurrentQuestion();
+            }
+        }
+
+        function jumpToQuestion(targetIdx) {
+            if (targetIdx >= 0 && targetIdx < state.activeQuiz.questions.length) {
+                state.quizSession.currentQuestionIdx = targetIdx;
+                if (state.activeQuiz.timerPerQuestion > 0) resetTimerForQuestion();
+                renderCurrentQuestion();
+            }
+        }
+
+        function renderQuestionMatrix() {
+            const matrix = document.getElementById('question-matrix');
+            const questions = state.activeQuiz.questions;
+
+            matrix.innerHTML = questions.map((_, idx) => {
+                const isCurrent = idx === state.quizSession.currentQuestionIdx;
+                const isAnswered = state.quizSession.answers.hasOwnProperty(idx);
+                const isMarked = state.quizSession.reviews[idx];
+
+                let bgClass = "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300";
+                if (isAnswered) bgClass = "bg-brand-500 text-white font-bold";
+                if (isMarked) bgClass = "bg-amber-500 text-white font-bold";
+
+                return `
+                    <button onclick="jumpToQuestion(${idx})" class="w-8 h-8 rounded-xl text-xs flex items-center justify-center transition ${bgClass} ${isCurrent ? 'ring-2 ring-slate-900 dark:ring-white scale-110 shadow-sm' : ''}">
+                        ${idx + 1}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function confirmQuizSubmit() {
+            const unanswered = state.activeQuiz.questions.length - Object.keys(state.quizSession.answers).length;
+            const msg = unanswered > 0 ? `You have ${unanswered} unanswered question(s). Are you sure you want to finalize your submission?` : "Great job completing all questions! Ready to calculate results?";
+            document.getElementById('submit-modal-msg').innerText = msg;
+            document.getElementById('submit-confirm-modal').classList.remove('hidden');
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submit-confirm-modal').classList.add('hidden');
+        }
+
+        /* ==========================================================================
+           8. SCORING & RESULT EVALUATION
+           ========================================================================== */
+        function finalizeQuizSubmission() {
+            closeSubmitModal();
+            if (state.quizSession.timerInterval) {
+                clearInterval(state.quizSession.timerInterval);
+                state.quizSession.timerInterval = null;
+            }
+
+            const quiz = state.activeQuiz;
+            const answers = state.quizSession.answers;
+
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unansweredCount = 0;
+
+            quiz.questions.forEach((q, idx) => {
+                if (!answers.hasOwnProperty(idx)) {
+                    unansweredCount++;
+                } else if (answers[idx] === q.correctAnswer) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+            });
+
+            const total = quiz.questions.length;
+            const scorePct = Math.round((correctCount / total) * 100);
+
+            // Populate Result View
+            document.getElementById('result-score-pct').innerText = `${scorePct}%`;
+            document.getElementById('result-score-ratio').innerText = `${correctCount} OUT OF ${total} QUESTIONS CORRECT`;
+            document.getElementById('res-correct').innerText = correctCount;
+            document.getElementById('res-incorrect').innerText = incorrectCount;
+            document.getElementById('res-unanswered').innerText = unansweredCount;
+            document.getElementById('res-time').innerText = `${state.quizSession.timeTaken}s`;
+
+            // Score Feedback
+            const badge = document.getElementById('result-badge');
+            const msg = document.getElementById('result-message');
+
+            if (scorePct >= 90) {
+                badge.innerText = "Exceptional AI Mastery! 🌟";
+                msg.innerText = "Outstanding! You've demonstrated comprehensive knowledge in this AI & Machine Learning topic.";
+                triggerConfetti();
+            } else if (scorePct >= 70) {
+                badge.innerText = "Great Performance! 👏";
+                msg.innerText = "Solid understanding! Review the detailed answers to sharpen any missed nuances.";
+                triggerConfetti();
+            } else if (scorePct >= 50) {
+                badge.innerText = "Good Effort! 📚";
+                msg.innerText = "Decent start! Re-review the explanations to strengthen weak conceptual areas.";
+            } else {
+                badge.innerText = "Keep Learning! 💪";
+                msg.innerText = "Don't get discouraged! Machine Learning is complex — study the answer keys and retry.";
+            }
+
+            // Save to Local History
+            const historyRecord = {
+                id: `hist-${Date.now()}`,
+                quizId: quiz.id,
+                title: quiz.title,
+                subject: quiz.subject,
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                scorePct: scorePct,
+                correctCount: correctCount,
+                totalQuestions: total,
+                timeTaken: state.quizSession.timeTaken,
+                questions: quiz.questions
+            };
+
+            state.history.unshift(historyRecord);
+            localStorage.setItem('quizgenius_history', JSON.stringify(state.history));
+
+            // Render Detailed Review Screen
+            renderDetailedAnswerReview();
+
+            navigateTo('result');
+        }
+
+        function renderDetailedAnswerReview() {
+            const list = document.getElementById('review-cards-list');
+            const quiz = state.activeQuiz;
+            const answers = state.quizSession.answers;
+
+            list.innerHTML = quiz.questions.map((q, idx) => {
+                const userChoice = answers[idx];
+                const isCorrect = userChoice === q.correctAnswer;
+                const isUnanswered = (userChoice === undefined);
+
+                let statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">Correct</span>`;
+                if (isUnanswered) {
+                    statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">Not Answered</span>`;
+                } else if (!isCorrect) {
+                    statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700">Incorrect</span>`;
+                }
+
+                let userSelectionStyle = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700';
+                if (!isUnanswered) {
+                    userSelectionStyle = isCorrect ? 
+                        'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60' : 
+                        'bg-rose-50 dark:bg-rose-950/30 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60';
+                }
+
+                return `
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Question ${idx + 1}</span>
+                            ${statusBadge}
+                        </div>
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base">${escapeHTML(q.question)}</h4>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-semibold">
+                            <div class="p-3 rounded-xl ${userSelectionStyle}">
+                                Your Selection: ${isUnanswered ? '<span class="italic text-slate-400">None</span>' : escapeHTML(q.options[userChoice])}
+                            </div>
+                            <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-900/60">
+                                Correct Answer: ${escapeHTML(q.options[q.correctAnswer])}
+                            </div>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                            <p class="font-bold text-slate-800 dark:text-slate-200"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> AI Concept Explanation:</p>
+                            <p class="leading-relaxed">${escapeHTML(q.explanation)}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /* ==========================================================================
+           9. HISTORY, LEADERBOARD, ANALYTICS & VIVA
+           ========================================================================== */
+        function renderHistoryTable() {
+            const body = document.getElementById('history-table-body');
+            if (state.history.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="p-8 text-center text-slate-400 text-xs">No quiz history available yet. Complete a quiz to start logging records!</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            body.innerHTML = state.history.map((item, idx) => `
+                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                    <td class="p-4 font-bold text-slate-900 dark:text-white">${escapeHTML(item.title)}</td>
+                    <td class="p-4 text-xs text-slate-500">${escapeHTML(item.subject)}</td>
+                    <td class="p-4 text-xs text-slate-400">${item.date}</td>
+                    <td class="p-4 font-extrabold text-brand-600">${item.scorePct}%</td>
+                    <td class="p-4 text-xs text-slate-500">${item.correctCount}/${item.totalQuestions} Correct</td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="retryHistoryQuiz(${idx})" class="px-2.5 py-1 text-xs font-bold text-brand-600 hover:bg-brand-50 rounded-lg">
+                            Retry
+                        </button>
+                        <button onclick="deleteHistoryItem(${idx})" class="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg" title="Delete record">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteHistoryItem(idx) {
+            state.history.splice(idx, 1);
+            localStorage.setItem('quizgenius_history', JSON.stringify(state.history));
+            renderHistoryTable();
+            updateDashboardData();
+            showToast("Record deleted.", "info");
+        }
+
+        function confirmClearHistory() {
+            if (confirm("Are you sure you want to clear all AI quiz history?")) {
+                state.history = [];
+                localStorage.removeItem('quizgenius_history');
+                renderHistoryTable();
+                updateDashboardData();
+                showToast("All quiz history cleared.", "info");
+            }
+        }
+
+        function renderLeaderboard() {
+            // Compute real user XP: 50 XP per correct question + 100 XP per quiz completed
+            let userCorrect = 0;
+            state.history.forEach(h => userCorrect += (h.correctCount || 0));
+            const userXP = (userCorrect * 50) + (state.history.length * 100);
+
+            const scholars = [
+                { name: "Dr. Elena Rostova", title: "Senior AI Researcher", xp: 2850, quizzes: 24, avatar: "ER", color: "bg-amber-500" },
+                { name: "Arjun Mehta", title: "Deep Learning Engineer", xp: 2300, quizzes: 19, avatar: "AM", color: "bg-purple-600" },
+                { name: "Sophia Chen", title: "NLP Specialist", xp: 1750, quizzes: 15, avatar: "SC", color: "bg-cyan-600" },
+                { name: state.user.name, title: "AI Scholar", xp: userXP, quizzes: state.history.length, avatar: state.user.avatarInitials, color: "bg-brand-600", isCurrent: true }
+            ];
+
+            // Sort by XP descending
+            scholars.sort((a, b) => b.xp - a.xp);
+
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = scholars.map((u, rankIdx) => `
+                <div class="flex items-center justify-between p-4 ${u.isCurrent ? 'bg-brand-50/70 dark:bg-brand-950/40 border-l-4 border-brand-600' : ''}">
+                    <div class="flex items-center gap-4">
+                        <span class="w-6 text-center font-extrabold text-sm ${rankIdx === 0 ? 'text-amber-500' : 'text-slate-400'}">#${rankIdx + 1}</span>
+                        <div class="w-10 h-10 rounded-full ${u.color} text-white font-bold flex items-center justify-center text-xs shadow-sm">
+                            ${u.avatar}
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900 dark:text-white">${escapeHTML(u.name)} ${u.isCurrent ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-brand-100 text-brand-700 dark:bg-brand-900 dark:text-brand-300 font-bold ml-1">You</span>' : ''}</h4>
+                            <p class="text-[10px] text-slate-500">${u.title} • ${u.quizzes} Quizzes</p>
+                        </div>
+                    </div>
+                    <span class="font-mono font-extrabold text-sm text-brand-600 dark:text-brand-400">${u.xp} XP</span>
+                </div>
+            `).join('');
+        }
+
+        function renderAnalytics() {
+            if (state.history.length === 0) {
+                document.getElementById('analytics-empty-state').classList.remove('hidden');
+                document.getElementById('analytics-content').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('analytics-empty-state').classList.add('hidden');
+            document.getElementById('analytics-content').classList.remove('hidden');
+
+            // Calculate metrics grouped by AI/ML Subject
+            const subjectStats = {};
+            state.history.forEach(item => {
+                const subj = item.subject || 'Artificial Intelligence';
+                if (!subjectStats[subj]) {
+                    subjectStats[subj] = { totalPct: 0, count: 0, correct: 0, questions: 0 };
+                }
+                subjectStats[subj].totalPct += item.scorePct;
+                subjectStats[subj].count += 1;
+                subjectStats[subj].correct += item.correctCount || 0;
+                subjectStats[subj].questions += item.totalQuestions || 0;
+            });
+
+            const subjects = Object.keys(subjectStats);
+            let strongest = { name: "Deep Learning", avg: 0 };
+            let weakest = { name: "Natural Language Processing", avg: 100 };
+
+            subjects.forEach(subj => {
+                const avg = Math.round(subjectStats[subj].totalPct / subjectStats[subj].count);
+                if (avg > strongest.avg) strongest = { name: subj, avg: avg };
+                if (avg < weakest.avg) weakest = { name: subj, avg: avg };
+            });
+
+            document.getElementById('insight-strongest').innerText = `${strongest.name} (${strongest.avg}% Avg)`;
+            document.getElementById('insight-focus').innerText = `${weakest.name} (${weakest.avg}% Avg)`;
+            
+            // Overall status
+            let totalCorrect = 0, totalQuestions = 0;
+            subjects.forEach(s => {
+                totalCorrect += subjectStats[s].correct;
+                totalQuestions += subjectStats[s].questions;
+            });
+            const overallAcc = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+            document.getElementById('insight-status').innerText = `${overallAcc}% Accuracy across ${totalQuestions} AI/ML Questions`;
+
+            // Render subject progress bars
+            const bars = document.getElementById('analytics-subject-bars');
+            bars.innerHTML = subjects.map(subj => {
+                const avg = Math.round(subjectStats[subj].totalPct / subjectStats[subj].count);
+                return `
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-300">
+                            <span>${escapeHTML(subj)} (${subjectStats[subj].count} Quizzes)</span>
+                            <span class="text-brand-600 dark:text-brand-400 font-extrabold">${avg}%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-brand-500 to-secondary-500 h-full rounded-full transition-all duration-500" style="width: ${Math.max(5, avg)}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderVivaAccordion() {
+            const vivaItems = [
+                {
+                    q: "Q1: What are the fundamental differences between Artificial Intelligence (AI), Machine Learning (ML), and Deep Learning (DL)?",
+                    a: "Artificial Intelligence (AI) is the overarching discipline of creating systems capable of human-like intelligence. Machine Learning (ML) is a subset of AI where algorithms learn statistical patterns from data rather than hardcoded rules. Deep Learning (DL) is a further subset of ML based on multi-layered artificial neural networks capable of automatically learning hierarchical feature representations from raw data."
+                },
+                {
+                    q: "Q2: Explain the Bias-Variance Tradeoff and common strategies to prevent Overfitting.",
+                    a: "Bias represents systematic error from oversimplified assumptions (underfitting), while Variance represents model sensitivity to small fluctuations in training noise (overfitting). Overfitting can be mitigated via L1/L2 regularization, dropout, cross-validation, data augmentation, early stopping, and pruning decision trees."
+                },
+                {
+                    q: "Q3: How does Backpropagation work in conjunction with Gradient Descent to optimize Neural Networks?",
+                    a: "Backpropagation applies the Chain Rule of calculus recursively from the output layer back to early layers to compute the partial derivative of the scalar loss with respect to every weight (dL/dw). Gradient Descent then updates weights in the opposite direction of the gradient: w_new = w_old - eta * (dL/dw)."
+                },
+                {
+                    q: "Q4: When should you prioritize Recall over Precision in Machine Learning evaluation?",
+                    a: "Recall (TP / (TP + FN)) measures the fraction of actual positive cases detected, while Precision (TP / (TP + FP)) measures the proportion of positive predictions that are correct. Recall is prioritized when the cost of False Negatives is severe — for instance, medical cancer diagnosis or critical security intrusion detection where missing a positive case is catastrophic."
+                },
+                {
+                    q: "Q5: What is the Transformer Self-Attention mechanism, and why does it outperform Recurrent Neural Networks (RNNs)?",
+                    a: "Self-Attention computes Attention(Q, K, V) = softmax(Q * K^T / sqrt(d_k)) * V across all token pairs simultaneously. Unlike sequential RNNs, Transformers process tokens in parallel, eliminate vanishing gradient bottlenecks across long context windows, and learn rich contextual embeddings."
+                },
+                {
+                    q: "Q6: What is the Single Page Application (SPA) architecture used in QuizGenius AI?",
+                    a: "The SPA loads a single HTML shell and dynamically updates views via JavaScript DOM manipulation without requiring full-page server reloads, delivering instant sub-millisecond navigation, fluid transitions, and seamless state preservation."
+                },
+                {
+                    q: "Q7: How does QuizGenius AI handle scoring, quiz generation, and state persistence?",
+                    a: "Centralized state is maintained in a global JavaScript state object. Scores are evaluated by comparing chosen option indices with verified answer keys. Quiz history and user preferences persist across browser sessions using HTML5 localStorage."
+                },
+                {
+                    q: "Q8: How does the AI Quiz Generator handle offline and low-connectivity environments?",
+                    a: "It incorporates a dual-mode engine: a smart local AI/ML question generator that analyzes topics and constructs valid domain questions without internet, alongside an optional live Gemini API connection for direct generative AI creation."
+                }
+            ];
+
+            const accordion = document.getElementById('viva-accordion');
+            accordion.innerHTML = vivaItems.map((item) => `
+                <details class="group bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-200/60 dark:border-slate-800">
+                    <summary class="font-bold text-xs md:text-sm text-slate-800 dark:text-slate-200 cursor-pointer flex items-center justify-between">
+                        <span>${escapeHTML(item.q)}</span>
+                        <i class="fa-solid fa-chevron-down group-open:rotate-180 transition text-slate-400 text-xs"></i>
+                    </summary>
+                    <p class="mt-3 text-xs text-slate-600 dark:text-slate-400 leading-relaxed pl-2 border-l-2 border-brand-500">
+                        ${escapeHTML(item.a)}
+                    </p>
+                </details>
+            `).join('');
+        }
+
+        function populateSettingsForm() {
+            document.getElementById('setting-name').value = state.user.name || "Alex Student";
+            document.getElementById('setting-diff').value = state.user.defaultDiff || "Medium";
+            document.getElementById('setting-qcount').value = state.user.defaultCount || 5;
+        }
+
+        function saveSettings(e) {
+            e.preventDefault();
+            const name = document.getElementById('setting-name').value.trim();
+            const diff = document.getElementById('setting-diff').value;
+            const count = parseInt(document.getElementById('setting-qcount').value, 10);
+
+            if (name) {
+                state.user.name = name;
+                state.user.defaultDiff = diff;
+                state.user.defaultCount = count;
+
+                // Update initials
+                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || "AI";
+                state.user.avatarInitials = initials;
+
+                document.getElementById('sidebar-user-name').innerText = name;
+                document.getElementById('sidebar-user-avatar').innerText = initials;
+
+                localStorage.setItem('quizgenius_user', JSON.stringify(state.user));
+                showToast("Preferences saved successfully!", "success");
+            }
+        }
+
+        /* ==========================================================================
+           10. UTILITIES & CONFETTI
+           ========================================================================== */
+        function escapeHTML(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function showToast(message, type = "info") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            let colors = "bg-slate-900 text-white";
+            if (type === 'success') colors = "bg-emerald-600 text-white";
+            if (type === 'error') colors = "bg-rose-600 text-white";
+            if (type === 'warning') colors = "bg-amber-500 text-white";
+
+            toast.className = `p-4 rounded-2xl shadow-xl text-xs font-bold flex items-center gap-3 transition-all transform translate-y-2 ${colors} pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-info"></i><span>${escapeHTML(message)}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const pieces = Array.from({ length: 80 }).map(() => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                size: Math.random() * 8 + 4,
+                color: ['#6366F1', '#8B5CF6', '#06B6D4', '#10B981', '#F59E0B'][Math.floor(Math.random() * 5)],
+                vy: Math.random() * 3 + 2,
+                vx: Math.random() * 2 - 1
+            }));
+
+            let frame = 0;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    p.y += p.vy;
+                    p.x += p.vx;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+                frame++;
+                if (frame < 120) requestAnimationFrame(animate);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            animate();
+        }
+
+        /* ==========================================================================
+           11. INITIALIZATION ON PAGE LOAD
+           ========================================================================== */
+        window.onload = function() {
+            // Restore Dark Theme preference
+            const savedTheme = localStorage.getItem('quizgenius_theme');
+            if (savedTheme === 'dark') document.documentElement.classList.add('dark');
+
+            // Restore History
+            const savedHistory = localStorage.getItem('quizgenius_history');
+            if (savedHistory) {
+                try { state.history = JSON.parse(savedHistory); } catch (e) {}
+            }
+
+            // Restore User Profile
+            const savedUser = localStorage.getItem('quizgenius_user');
+            if (savedUser) {
+                try {
+                    state.user = Object.assign(state.user, JSON.parse(savedUser));
+                } catch (e) {}
+            }
+
+            // Update user UI
+            if (state.user.name) {
+                document.getElementById('sidebar-user-name').innerText = state.user.name;
+                const initials = state.user.avatarInitials || state.user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                document.getElementById('sidebar-user-avatar').innerText = initials;
+            }
+
+            // Load initial view
+            navigateTo('dashboard');
+        };
+    </script>
+</body>
+</html>
