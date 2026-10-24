@@ -5,7 +5,8 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![AI/ML Domain](https://img.shields.io/badge/Domain-AI%20%26%20Machine%20Learning-indigo.svg)](#)
 [![Built with Tailwind](https://img.shields.io/badge/Built%20With-Tailwind%20CSS%20%7C%20Vanilla%20JS-6366f1.svg)](#)
-[![Deployment](https://img.shields.io/badge/Deployment-GitHub%20Pages-emerald.svg)](#)
+[![Deployment](https://img.shields.io/badge/Deployment-GitHub%20Pages-emerald.svg)](https://milapporiya.github.io/quizgenius-ai/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blueviolet.svg)](https://milapporiya.github.io/quizgenius-ai/)
 
 ---
 
@@ -40,6 +41,10 @@
 ---
 
 ## 🚀 Quick Start
+
+### 🌐 Live Web App (Deployed)
+Launch the application instantly on any device:
+👉 **[https://milapporiya.github.io/quizgenius-ai/](https://milapporiya.github.io/quizgenius-ai/)**
 
 ### Option 1: Open Directly in Browser
 Simply open `index.html` or `quizgenius_ai_app.html` in any modern web browser (Chrome, Edge, Firefox, Safari).
